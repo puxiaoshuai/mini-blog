@@ -1,7 +1,8 @@
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import GithubSlugger from "github-slugger";
 import { prisma } from "@/lib/db";
-import { upsertTags } from "@/lib/posts";
+import { upsertTags, getPublishedPostsPage } from "@/lib/posts";
 import { requireAdmin } from "@/lib/auth";
 import { revalidatePostPaths } from "@/lib/revalidate";
 
@@ -15,21 +16,12 @@ type PostBody = {
   tags?: string[];
 };
 
-/** GET /api/posts — 已发布文章列表（公开） */
-export async function GET() {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      excerpt: true,
-      createdAt: true,
-      tags: { select: { name: true, slug: true } },
-    },
-  });
-  return NextResponse.json(posts);
+/** GET /api/posts?page=1&pageSize=20 — 已发布文章分页（公开） */
+export async function GET(request: NextRequest) {
+  const sp = request.nextUrl.searchParams;
+  const page = Math.max(1, Number(sp.get("page")) || 1);
+  const pageSize = Math.min(50, Math.max(1, Number(sp.get("pageSize")) || 20));
+  return NextResponse.json(await getPublishedPostsPage({ page, pageSize }));
 }
 
 /** POST /api/posts — 新建文章（ADMIN） */

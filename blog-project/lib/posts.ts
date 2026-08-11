@@ -13,11 +13,13 @@ export type PostCard = {
   tags: { name: string; slug: string }[];
 };
 
-/** 已发布文章列表（卡片/列表用），含封面、阅数、阅读时长 */
-export async function getPublishedPosts(): Promise<PostCard[]> {
+/** 拉取已发布文章卡片（分页内部共用），含封面、阅数、阅读时长 */
+async function fetchPostCards(skip: number, take: number): Promise<PostCard[]> {
   const rows = await prisma.post.findMany({
     where: { published: true },
     orderBy: { createdAt: "desc" },
+    skip,
+    take,
     select: {
       id: true,
       title: true,
@@ -34,6 +36,30 @@ export async function getPublishedPosts(): Promise<PostCard[]> {
     ...p,
     readingMinutes: Math.max(1, Math.round(content.length / 400)),
   }));
+}
+
+/** 已发布文章全量（首页/静态参数/sitemap 用） */
+export async function getPublishedPosts(): Promise<PostCard[]> {
+  return fetchPostCards(0, 100_000);
+}
+
+/** 已发布文章分页（文章列表页用） */
+export async function getPublishedPostsPage({
+  page = 1,
+  pageSize = 20,
+}: { page?: number; pageSize?: number } = {}) {
+  const skip = (page - 1) * pageSize;
+  const [total, items] = await Promise.all([
+    prisma.post.count({ where: { published: true } }),
+    fetchPostCards(skip, pageSize),
+  ]);
+  return {
+    items,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.max(1, Math.ceil(total / pageSize)),
+  };
 }
 
 /** 文章详情（按 slug，仅已发布） */
