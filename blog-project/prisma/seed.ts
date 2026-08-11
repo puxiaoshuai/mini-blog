@@ -1,10 +1,10 @@
 import "dotenv/config";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/generated/prisma/client";
 import bcrypt from "bcryptjs";
 
-const adapter = new PrismaBetterSqlite3({
-  url: process.env.DATABASE_URL ?? "file:./dev.db",
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
 });
 const prisma = new PrismaClient({ adapter });
 
@@ -112,30 +112,71 @@ async function main() {
     }),
   };
 
-  // 示例文章（MDX 内容，M2 渲染）
-  await prisma.post.upsert({
-    where: { slug: "hello-world" },
-    update: {},
-    create: {
+  // 示例文章（MDX 内容，M2 渲染）：先清空再重建，保证每次 seed 内容最新
+  await prisma.post.deleteMany();
+  await prisma.post.create({
+    data: {
       title: "你好，大道至简",
       slug: "hello-world",
       excerpt: "从 WordPress 迁移到 Next.js 的第一篇。",
-      content:
-        "# 你好，大道至简\n\n从 WordPress 迁移到 Next.js + Tailwind + MDX 的第一篇。\n\n> 时光是画在卷上的河流。",
+      content: [
+        "## 为什么换到 Next.js",
+        "",
+        "从 WordPress（Qzdy 主题）迁移而来，想要更快的首屏、更自由的排版，以及 MDX 带来的写作体验。",
+        "",
+        "- 静态生成 + 按需刷新（SSG / ISR）",
+        "- 纸感编辑风：暖纸、墨黑、朱红",
+        "- 正文即 Markdown，代码高亮开箱即用",
+        "",
+        "> 时光是画在卷上的河流。—— 站名副题",
+        "",
+        "## 迁移计划",
+        "",
+        "后续把真实文章逐步搬进来，见仓库根目录的《任务清单》。",
+      ].join("\n"),
       published: true,
       authorId: admin.id,
       tags: { connect: [{ id: tags.claude.id }] },
     },
   });
-  await prisma.post.upsert({
-    where: { slug: "typescript-tips" },
-    update: {},
-    create: {
+  await prisma.post.create({
+    data: {
       title: "TypeScript: interface vs type 终极指南",
       slug: "typescript-tips",
       excerpt: "interface 定义是什么，type 描述什么关系。",
-      content:
-        "# TypeScript: interface vs type\n\n`interface` 描述对象契约，`type` 可以组合任意类型。\n\n```ts\ntype ID = string | number;\ninterface User { id: ID; name: string }\n```",
+      coverImage:
+        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=1400&auto=format&fit=crop",
+      content: [
+        "## interface 与 type 的分工",
+        "",
+        "`interface` 定义是什么（对象契约），`type` 描述什么关系（任意类型组合）。",
+        "",
+        "| | interface | type |",
+        "|---|---|---|",
+        "| 对象形状 | ✅ 推荐 | ✅ |",
+        "| 联合 / 交叉 | ❌ | ✅ |",
+        "| 合并声明 | ✅ | ❌ |",
+        "",
+        "## 示例",
+        "",
+        "```ts",
+        "type ID = string | number;",
+        "interface User {",
+        "  id: ID;",
+        "  name: string;",
+        "}",
+        "function greet(u: User) {",
+        "  return `你好，${u.name}`;",
+        "}",
+        "```",
+        "",
+        "> 「interface 定义是什么，type 描述什么关系。」一行话写进团队规范。",
+        "",
+        "## 何时用谁",
+        "",
+        "- 库的公开 API / 可扩展对象 → `interface`",
+        "- 联合、元组、工具类型组合 → `type`",
+      ].join("\n"),
       published: true,
       authorId: admin.id,
       tags: { connect: [{ id: tags.typescript.id }] },

@@ -1,35 +1,9 @@
 import Link from "next/link";
+import { getPublishedPosts, getStats } from "@/lib/posts";
+import { formatDate } from "@/lib/utils";
 
-/** 首页骨架（M1）：M2 起接入数据库与真实文章 */
-const STATS = [
-  { value: "42", label: "篇文章" },
-  { value: "8642", label: "次浏览" },
-  { value: "12", label: "个标签" },
-  { value: "36", label: "条拾语" },
-];
-
-const POSTS = [
-  {
-    title: "TypeScript: interface vs type 终极指南",
-    date: "2026.07.13",
-    tag: "TypeScript",
-  },
-  {
-    title: "好用的 AI 插件",
-    date: "2026.07.02",
-    tag: "AI 工具",
-  },
-  {
-    title: "claude — command 的使用",
-    date: "2026.06.18",
-    tag: "Claude",
-  },
-  {
-    title: "Elasticsearch · Mac 安装与上手",
-    date: "2026.05.30",
-    tag: "数据库",
-  },
-];
+/** 首页：刊头 / 卷首诗 / 数据台账 / 最近文章 / 项目 / 订阅带 */
+const STATS_LABELS = ["篇文章", "次浏览", "个标签", "条拾语"];
 
 /** 项目板块（占位）：真实项目名/简介/演示/源码链接待用户提供 */
 const PROJECTS = [
@@ -62,7 +36,10 @@ const PROJECTS = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [stats, posts] = await Promise.all([getStats(), getPublishedPosts()]);
+  const statsValues = [stats.posts, stats.views, stats.tags, stats.shiyus];
+
   return (
     <div>
       {/* ═══ 刊头 Masthead ═══ */}
@@ -120,18 +97,18 @@ export default function Home() {
       {/* ═══ 数据台账 ═══ */}
       <section className="mx-auto max-w-6xl px-5">
         <div className="grid grid-cols-2 border-y-2 border-ink bg-card/60 md:grid-cols-4">
-          {STATS.map((s, i) => (
+          {statsValues.map((value, i) => (
             <div
-              key={s.label}
+              key={STATS_LABELS[i]}
               className={`py-7 px-4 text-center ${
-                i < STATS.length - 1 ? "border-r border-linesoft" : ""
+                i < statsValues.length - 1 ? "border-r border-linesoft" : ""
               }`}
             >
               <p className="font-serif text-3xl font-black md:text-4xl">
-                {s.value}
+                {value}
               </p>
               <p className="mt-1 font-mono text-[10px] tracking-[.3em] text-inksoft">
-                {s.label}
+                {STATS_LABELS[i]}
               </p>
             </div>
           ))}
@@ -152,19 +129,23 @@ export default function Home() {
         </div>
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {POSTS.map((post) => (
+          {posts.slice(0, 4).map((post) => (
             <Link
-              key={post.title}
-              href="/posts"
+              key={post.id}
+              href={`/posts/${post.slug}`}
               className="group flex flex-col justify-between gap-8 border border-line bg-card p-5 transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgb(var(--c-ink)/.12)]"
             >
               <div>
-                <span className="chip chip-accent">{post.tag}</span>
+                {post.tags[0] && (
+                  <span className="chip chip-accent">{post.tags[0].name}</span>
+                )}
                 <h3 className="mt-3 font-serif text-lg font-bold leading-snug transition-colors group-hover:text-accent">
                   {post.title}
                 </h3>
               </div>
-              <p className="font-mono text-[11px] text-inksoft">{post.date}</p>
+              <p className="font-mono text-[11px] text-inksoft">
+                {formatDate(post.createdAt)}
+              </p>
             </Link>
           ))}
         </div>

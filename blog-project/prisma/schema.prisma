@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // 开发用，生产可切换 postgresql
+  provider = "postgresql" // 本地 Docker + 生产一致
 }
 
 model Post {
