@@ -1,0 +1,72 @@
+import Link from "next/link";
+import { getAdminComments } from "@/lib/admin";
+import { formatDate } from "@/lib/utils";
+import ApproveCommentButton from "@/components/admin/ApproveCommentButton";
+import DeleteButton from "@/components/admin/DeleteButton";
+
+export const metadata = { title: "评论管理" };
+
+export default async function AdminCommentsPage() {
+  const comments = await getAdminComments();
+  const pending = comments.filter((c) => !c.published).length;
+
+  return (
+    <div className="space-y-6">
+      <header className="flex items-center gap-3">
+        <h1 className="font-serif text-2xl font-black">评论管理</h1>
+        <span className="pt-1 font-mono text-[10px] tracking-[.25em] text-inksoft">
+          COMMENTS · {comments.length}（待审 {pending}）
+        </span>
+      </header>
+
+      {comments.length === 0 ? (
+        <div className="border border-line bg-card px-6 py-16 text-center font-mono text-xs text-inksoft">
+          还没有评论
+        </div>
+      ) : (
+        <ul className="space-y-4">
+          {comments.map((c) => (
+            <li key={c.id} className={`border border-line bg-card p-6 ${!c.published ? "border-l-2 border-l-accent" : ""}`}>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-[10px] text-inksoft">
+                  {formatDate(c.createdAt)}
+                </span>
+                <span
+                  className={`border px-1.5 py-0.5 font-mono text-[9px] tracking-[.1em] ${
+                    c.published ? "border-sage text-sage" : "border-accent text-accent"
+                  }`}
+                >
+                  {c.published ? "已发布" : "待审核"}
+                </span>
+                <Link
+                  href={`/posts/${c.post.slug}`}
+                  className="font-mono text-[10px] text-accent transition-colors hover:underline"
+                >
+                  评论于《{c.post.title}》
+                </Link>
+              </div>
+              <p className="mt-2 font-serif text-base leading-relaxed">{c.content}</p>
+              <div className="mt-3 flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold font-serif font-black text-paper">
+                  {(c.author.name ?? "匿")[0]}
+                </span>
+                <p className="text-sm font-medium">
+                  {c.author.name ?? "匿名"}
+                  {c.author.email && (
+                    <span className="ml-2 font-mono text-[10px] text-inksoft">{c.author.email}</span>
+                  )}
+                </p>
+                <div className="ml-auto flex w-40 items-center gap-2">
+                  <ApproveCommentButton id={c.id} published={c.published} />
+                  <div className="flex-1">
+                    <DeleteButton id={c.id} action={`/api/comments/${c.id}`} />
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

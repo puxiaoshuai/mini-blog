@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPostBySlug, getPublishedPosts, getAdjacentPosts } from "@/lib/posts";
+import { getPostBySlug, getPublishedPosts, getAdjacentPosts, getPublishedComments } from "@/lib/posts";
 import { renderMDX, getToc } from "@/lib/mdx";
 import { formatDate } from "@/lib/utils";
 import Toc from "@/components/posts/Toc";
+import CommentForm from "@/components/posts/CommentForm";
+import PostInteractions from "@/components/posts/PostInteractions";
 
 type Params = Promise<{ slug: string }>;
 
@@ -23,6 +26,14 @@ export async function generateMetadata({
   return {
     title: post?.title ?? "文章",
     description: post?.excerpt ?? undefined,
+    alternates: { canonical: `/posts/${slug}` },
+    openGraph: {
+      title: post?.title ?? "文章",
+      description: post?.excerpt ?? undefined,
+      type: "article",
+      publishedTime: post?.createdAt?.toISOString(),
+      ...(post?.coverImage ? { images: [post.coverImage] } : {}),
+    },
   };
 }
 
@@ -31,10 +42,11 @@ export default async function PostPage({ params }: { params: Params }) {
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  const [content, toc, { prev, next }] = await Promise.all([
+  const [content, toc, { prev, next }, comments] = await Promise.all([
     renderMDX(post.content),
     Promise.resolve(getToc(post.content)),
     getAdjacentPosts(slug),
+    getPublishedComments(post.id),
   ]);
 
   const authorName = post.author.name ?? "博主";
@@ -54,6 +66,23 @@ export default async function PostPage({ params }: { params: Params }) {
         <span>/</span>
         <span className="truncate text-ink">{post.title}</span>
       </nav>
+
+      {/* JSON-LD：结构化数据（BlogPosting） */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: post.title,
+            description: post.excerpt ?? undefined,
+            datePublished: post.createdAt.toISOString(),
+            dateModified: post.updatedAt.toISOString(),
+            author: { "@type": "Person", name: post.author.name ?? "蒲小帅" },
+            ...(post.coverImage ? { image: post.coverImage } : {}),
+          }),
+        }}
+      />
 
       <div className="grid gap-12 lg:grid-cols-12">
         {/* ═══ 正文列 ═══ */}
@@ -92,33 +121,26 @@ export default async function PostPage({ params }: { params: Params }) {
                 </div>
               </div>
               <div className="hidden h-8 w-px bg-line sm:block" />
-              <div className="flex items-center gap-2 font-mono text-xs text-inksoft">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden
-                >
-                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-                {post.views} 次浏览
-              </div>
+              <PostInteractions
+                postId={post.id}
+                initialLikes={post.likes}
+                initialViews={post.views}
+              />
             </div>
           </header>
 
           {/* 封面（有则显示） */}
           {post.coverImage && (
             <figure className="frame mt-8 reveal" style={{ animationDelay: ".08s" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={post.coverImage}
-                alt={post.title}
-                className="w-full border border-ink/25"
-              />
+              <div className="relative aspect-[16/9] w-full overflow-hidden border border-ink/25 bg-card">
+                <Image
+                  src={post.coverImage}
+                  alt={post.title}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 66vw"
+                  className="object-cover"
+                />
+              </div>
             </figure>
           )}
 
@@ -219,19 +241,38 @@ export default async function PostPage({ params }: { params: Params }) {
             )}
           </nav>
 
-          {/* 评论区（M4 接入） */}
+          {/* 评论区 */}
           <section className="mt-14">
             <div className="mb-6 flex items-center gap-3">
               <h2 className="font-serif text-xl font-black">读者留言</h2>
               <span className="pt-1 font-mono text-[10px] tracking-[.25em] text-inksoft">
-                COMMENTS
+                COMMENTS · {comments.length}
               </span>
               <div className="h-px flex-1 bg-line" />
             </div>
-            <div className="border border-line bg-card p-4">
-              <p className="py-2 text-center text-sm text-inksoft">
-                评论区将在管理端完成后开放（M4）。
-              </p>
+
+            {comments.length > 0 && (
+              <ul className="space-y-4">
+                {comments.map((c) => (
+                  <li key={c.id} className="border border-line bg-card p-5">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sage font-serif font-black text-paper">
+                        {(c.author.name ?? "匿")[0]}
+                      </span>
+                      <div>
+                        <p className="text-sm font-medium">{c.author.name ?? "匿名"}</p>
+                        <p className="font-mono text-[10px] text-inksoft">{formatDate(c.createdAt)}</p>
+                      </div>
+                    </div>
+                    <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-ink/90">{c.content}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <div className="mt-6 border border-line bg-card p-5">
+              <p className="font-serif text-base font-black">发表留言</p>
+              <CommentForm postId={post.id} />
             </div>
           </section>
         </article>

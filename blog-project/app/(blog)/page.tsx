@@ -1,44 +1,16 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getPublishedPosts, getStats } from "@/lib/posts";
 import { formatDate } from "@/lib/utils";
+import { PROJECTS } from "@/lib/projects";
 
 /** 首页：刊头 / 卷首诗 / 数据台账 / 最近文章 / 项目 / 订阅带 */
 const STATS_LABELS = ["篇文章", "次浏览", "个标签", "条拾语"];
 
-/** 项目板块（占位）：真实项目名/简介/演示/源码链接待用户提供 */
-const PROJECTS = [
-  {
-    no: "PROJECT N°01",
-    period: "2024 — 至今",
-    name: "墨笺 · InkNote",
-    desc: "一款极简的 Markdown 笔记应用。离线优先，毫秒级全文搜索，支持双向链接与思维导图预览，数据以 SQLite 本地存储。",
-    tags: ["Next.js", "Tailwind", "Prisma"],
-    image:
-      "https://images.unsplash.com/photo-1517842645767-c639042777db?q=80&w=900&auto=format&fit=crop",
-  },
-  {
-    no: "PROJECT N°02",
-    period: "2023 — 2025",
-    name: "诗笺 · Shijian CLI",
-    desc: "在终端里为代码与文字排版的命令行工具。支持中英混排、语法高亮与「纸感」主题输出，让 CLI 也读起来像一首诗。",
-    tags: ["Rust", "CLI", "Nushell"],
-    image:
-      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=900&auto=format&fit=crop",
-  },
-  {
-    no: "PROJECT N°03",
-    period: "迁移中",
-    name: "大道至简 · 本站",
-    desc: "你正在看的这个博客。原 WordPress（Qzdy 主题）迁移至 Next.js + MDX + Prisma，纸感编辑风格，代码开源。",
-    tags: ["Next.js", "MDX", "Prisma", "Tailwind"],
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=900&auto=format&fit=crop",
-  },
-];
-
 export default async function Home() {
   const [stats, posts] = await Promise.all([getStats(), getPublishedPosts()]);
   const statsValues = [stats.posts, stats.views, stats.tags, stats.shiyus];
+  const [featured, ...rest] = posts;
 
   return (
     <div>
@@ -115,40 +87,128 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ 最近文章 ═══ */}
-      <section className="mx-auto mt-16 max-w-6xl px-5">
+      {/* ═══ 最近文章 · 杂志卡片网格 ═══ */}
+      <section id="articles" className="mx-auto mt-16 max-w-6xl px-5">
         <div className="mb-2 flex items-center gap-4">
-          <h2 className="font-serif text-2xl font-bold">最近文章</h2>
+          <h2 className="font-serif text-2xl font-black">最近文章</h2>
+          <span className="pt-1 font-mono text-[10px] tracking-[.25em] text-inksoft">
+            RECENT WRITING
+          </span>
           <div className="h-px flex-1 bg-line" />
           <Link
             href="/posts"
-            className="u-link font-mono text-xs tracking-[.2em] text-inksoft hover:text-accent"
+            className="font-mono text-[11px] text-inksoft transition-colors hover:text-accent"
           >
-            ALL →
+            全部文章 →
           </Link>
         </div>
 
-        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {posts.slice(0, 4).map((post) => (
-            <Link
-              key={post.id}
-              href={`/posts/${post.slug}`}
-              className="group flex flex-col justify-between gap-8 border border-line bg-card p-5 transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0_0_rgb(var(--c-ink)/.12)]"
-            >
-              <div>
-                {post.tags[0] && (
-                  <span className="chip chip-accent">{post.tags[0].name}</span>
-                )}
-                <h3 className="mt-3 font-serif text-lg font-bold leading-snug transition-colors group-hover:text-accent">
-                  {post.title}
-                </h3>
-              </div>
-              <p className="font-mono text-[11px] text-inksoft">
-                {formatDate(post.createdAt)}
-              </p>
-            </Link>
-          ))}
-        </div>
+        {posts.length === 0 ? (
+          <p className="py-16 text-center font-mono text-xs text-inksoft">
+            还没有发布文章。
+          </p>
+        ) : (
+          <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {/* 精选大卡 */}
+            {featured && (
+              <article className="reveal group md:col-span-2">
+                <Link
+                  href={`/posts/${featured.slug}`}
+                  className="card-raise grid h-full border border-line bg-card transition-colors hover:border-ink md:grid-cols-2"
+                >
+                  <div className="relative aspect-[16/9] overflow-hidden border-b border-line md:aspect-auto md:border-b-0 md:border-r">
+                    {featured.coverImage ? (
+                      <Image
+                        src={featured.coverImage}
+                        alt={featured.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-paper2">
+                        <span className="chip text-ink">
+                          {featured.tags[0]?.name ?? "文章"}
+                        </span>
+                      </div>
+                    )}
+                    <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ink/10" />
+                    {featured.tags[0] && (
+                      <span className="chip absolute bottom-3 left-3 bg-paper/90 text-ink">
+                        {featured.tags[0].name}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-col justify-center gap-3 p-6 md:p-8">
+                    <p className="font-mono text-[10px] tracking-[.15em] text-inksoft">
+                      {formatDate(featured.createdAt)} · {featured.readingMinutes} MIN · {featured.views} 阅
+                    </p>
+                    <h3 className="font-serif text-2xl font-black leading-snug transition-colors group-hover:text-accent">
+                      {featured.title}
+                    </h3>
+                    {featured.excerpt && (
+                      <p className="line-clamp-2 text-sm leading-relaxed text-inksoft">
+                        {featured.excerpt}
+                      </p>
+                    )}
+                    <span className="u-link mt-1 w-fit font-medium text-accent">
+                      阅读全文 →
+                    </span>
+                  </div>
+                </Link>
+              </article>
+            )}
+
+            {/* 普通卡片（最多 4 张） */}
+            {rest.slice(0, 4).map((post, i) => (
+              <article
+                key={post.id}
+                className="reveal"
+                style={{ animationDelay: `${(i + 1) * 0.08}s` }}
+              >
+                <Link
+                  href={`/posts/${post.slug}`}
+                  className="card-raise group block h-full border border-line bg-card transition-colors hover:border-ink"
+                >
+                  <div className="relative aspect-[16/9] overflow-hidden border-b border-line">
+                    {post.coverImage ? (
+                      <Image
+                        src={post.coverImage}
+                        alt={post.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-paper2">
+                        <span className="chip text-ink">{post.tags[0]?.name ?? "文章"}</span>
+                      </div>
+                    )}
+                    <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ink/10" />
+                    {post.tags[0] && (
+                      <span className="chip absolute bottom-3 left-3 bg-paper/90 text-ink">
+                        {post.tags[0].name}
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-5">
+                    <p className="font-mono text-[10px] tracking-[.15em] text-inksoft">
+                      {formatDate(post.createdAt)} · {post.readingMinutes} MIN · {post.views} 阅
+                    </p>
+                    <h3 className="mt-2 font-serif text-lg font-bold leading-snug transition-colors group-hover:text-accent">
+                      {post.title}
+                    </h3>
+                    {post.excerpt && (
+                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-inksoft">
+                        {post.excerpt}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ═══ 项目 ═══ */}
@@ -179,11 +239,12 @@ export default async function Home() {
                 href="#"
                 className="group relative block aspect-[16/10] overflow-hidden border-b border-line"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={project.image}
                   alt={project.name}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                 />
                 <span className="absolute left-3 top-3 chip bg-paper/90 text-ink">
                   {project.no}
@@ -205,24 +266,40 @@ export default async function Home() {
                   ))}
                 </div>
                 <div className="mt-6 flex items-center gap-3 border-t border-linesoft pt-4">
-                  <a
-                    href="#"
-                    className="flex h-10 flex-1 items-center justify-center gap-2 bg-accent font-mono text-xs tracking-[.12em] text-nighttext transition-colors hover:bg-accentdeep"
-                  >
-                    在线演示
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                      <path d="M7 17 17 7M8 7h9v9" />
-                    </svg>
-                  </a>
-                  <a
-                    href="#"
-                    className="flex h-10 flex-1 items-center justify-center gap-2 border border-ink font-mono text-xs tracking-[.12em] transition-colors hover:bg-ink hover:text-paper"
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                      <path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" />
-                    </svg>
-                    查看源码
-                  </a>
+                  {project.demoUrl ? (
+                    <a
+                      href={project.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-10 flex-1 items-center justify-center gap-2 bg-accent font-mono text-xs tracking-[.12em] text-nighttext transition-colors hover:bg-accentdeep"
+                    >
+                      在线演示
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                        <path d="M7 17 17 7M8 7h9v9" />
+                      </svg>
+                    </a>
+                  ) : (
+                    <span className="pointer-events-none flex h-10 flex-1 items-center justify-center gap-2 bg-accent/40 font-mono text-xs tracking-[.12em] text-nighttext">
+                      在线演示（待填链接）
+                    </span>
+                  )}
+                  {project.githubUrl ? (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-10 flex-1 items-center justify-center gap-2 border border-ink font-mono text-xs tracking-[.12em] transition-colors hover:bg-ink hover:text-paper"
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                        <path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" />
+                      </svg>
+                      查看源码
+                    </a>
+                  ) : (
+                    <span className="pointer-events-none flex h-10 flex-1 items-center justify-center gap-2 border border-ink/40 font-mono text-xs tracking-[.12em] text-inksoft/50">
+                      源码（待填链接）
+                    </span>
+                  )}
                 </div>
               </div>
             </article>

@@ -43,4 +43,4 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **设计系统「纸感编辑风」**：暖纸 `#F6F1E7` / 墨黑 / 朱红 `#A63D2F`；token 是 `rgb(r g b)` CSS 变量（`:root` + `html.dark` 两套），Tailwind 颜色类自动跟随翻转、**无需 `dark:` 变体**；反色带用 `bg-night text-nighttext`（恒定不翻转）。字体：Noto Serif SC（标题）/ Noto Sans SC（正文）/ IBM Plex Mono（mono 编号、日期），@fontsource 自托管（国内不可达 Google Fonts）。
 - **Tailwind v4**：无 `tailwind.config.js`，配置全在 `app/globals.css` 的 `@theme inline`。
 - **DB 连接**：Windows 下必须用 `127.0.0.1` 而非 `localhost`（IPv6 loopback 会连到 wslrelay 导致 P1001 超时）。
-- **进度（2026-08-11）**：M1 基建 + M2 内容模块 + **M3 拾语模块**已完成（`/shiyu` ISR 时间线 + `/api/shiyu`，写操作经 `lib/auth.ts` 的 `requireAdmin()` 占位守卫，M4 接 NextAuth 后启用）。M4 管理端 / M5 打磨 / M6 上线待做。
+- **进度（2026-08-11）**：**M1–M5 已完成**（M5-5 真实内容迁移取消）。前台全链（文章/标签/拾语/搜索/评论/阅赞）+ 管理端（`next-auth` v4 登录、`(admin)` 后台 CRUD、`proxy.ts` 守卫）+ SEO/图片优化/暗黑回归。待做：M6 上线（Vercel + 域名 + 真实信息）。

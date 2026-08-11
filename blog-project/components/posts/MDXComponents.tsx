@@ -101,7 +101,10 @@ function Td(props: ComponentProps<"td">) {
 }
 
 function Img(props: ComponentProps<"img">) {
-  return <img {...props} className="my-8 w-full border border-line" />;
+  // MDX 正文图宽高未知，无法用 next/image fill；懒加载 + 边框即可
+  // 注：alt 由 MDX 作者在正文里提供，经 props 传入，故此处两条规则都豁免
+  // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+  return <img {...props} loading="lazy" className="my-8 w-full border border-line" />;
 }
 
 function Hr(props: ComponentProps<"hr">) {

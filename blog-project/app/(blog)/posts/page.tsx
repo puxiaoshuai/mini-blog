@@ -42,14 +42,11 @@ export default async function PostsPage() {
                   </p>
                 )}
                 <div className="mt-3 flex flex-wrap items-center gap-3">
+                  {/* 卡片整体是 Link，内部标签须用 span，避免 <a> 嵌套 <a> */}
                   {post.tags.map((t) => (
-                    <Link
-                      key={t.slug}
-                      href={`/tags/${t.slug}`}
-                      className="chip chip-soft transition-colors hover:border-accent hover:text-accent"
-                    >
+                    <span key={t.slug} className="chip chip-soft">
                       {t.name}
-                    </Link>
+                    </span>
                   ))}
                   <span className="font-mono text-[11px] text-inksoft">
                     {formatDate(post.createdAt)}

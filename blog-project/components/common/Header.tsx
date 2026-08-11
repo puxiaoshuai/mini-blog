@@ -54,6 +54,17 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <Link
+            href="/search"
+            title="搜索"
+            aria-label="搜索"
+            className="hidden h-9 w-9 items-center justify-center border border-line transition-colors hover:border-ink hover:bg-card sm:flex"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </Link>
+          <Link
             href="/dashboard"
             className="hidden h-9 items-center gap-2 border border-ink px-4 font-mono text-xs tracking-[.15em] transition-colors hover:bg-ink hover:text-paper sm:inline-flex"
           >
@@ -92,6 +103,9 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
+          <Link href="/search" onClick={() => setOpen(false)}>
+            搜索
+          </Link>
           <Link href="/dashboard" onClick={() => setOpen(false)}>
             管理后台
           </Link>

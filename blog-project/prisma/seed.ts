@@ -85,16 +85,28 @@ const SHIYUS = [
 async function main() {
   console.log("🌱 开始播种 …");
 
-  // 管理员（默认密码 admin123，登录功能 M4 接入）
+  // 管理员（登录账号 admin / 密码 admin123；邮箱 1372553910@qq.com）
   const passwordHash = await bcrypt.hash("admin123", 10);
   const admin = await prisma.user.upsert({
     where: { email: "1372553910@qq.com" },
-    update: {},
+    update: { username: "admin" },
     create: {
       email: "1372553910@qq.com",
+      username: "admin",
       name: "蒲小帅",
       password: passwordHash,
       role: "ADMIN",
+    },
+  });
+
+  // 读者（评论作者，USER 角色）
+  const reader = await prisma.user.upsert({
+    where: { email: "reader@example.com" },
+    update: {},
+    create: {
+      email: "reader@example.com",
+      name: "读者",
+      role: "USER",
     },
   });
 
@@ -113,8 +125,10 @@ async function main() {
   };
 
   // 示例文章（MDX 内容，M2 渲染）：先清空再重建，保证每次 seed 内容最新
+  // 注意先删评论（Comment→Post 外键），再删文章，否则 FK 违约
+  await prisma.comment.deleteMany();
   await prisma.post.deleteMany();
-  await prisma.post.create({
+  const helloPost = await prisma.post.create({
     data: {
       title: "你好，大道至简",
       slug: "hello-world",
@@ -199,7 +213,33 @@ async function main() {
     });
   }
 
-  console.log(`✅ 播种完成：管理员 ×1、标签 ×2、文章 ×2、拾语 ×${SHIYUS.length}`);
+  // 评论：2 条已发布 + 1 条待审核，挂在 hello-world 下（评论管理 M4-6 演示）
+  await prisma.comment.createMany({
+    data: [
+      {
+        content: "从 WordPress 迁过来后首屏快多了，纸感编辑风很有味道。",
+        published: true,
+        postId: helloPost.id,
+        authorId: reader.id,
+      },
+      {
+        content: "期待后面的技术笔记，TypeScript 那篇也补全到博客里吧。",
+        published: true,
+        postId: helloPost.id,
+        authorId: reader.id,
+      },
+      {
+        content: "（疑似广告）加微信领 198 元课程，点击链接 https://…",
+        published: false,
+        postId: helloPost.id,
+        authorId: reader.id,
+      },
+    ],
+  });
+
+  console.log(
+    `✅ 播种完成：管理员 ×1、读者 ×1、标签 ×2、文章 ×2、拾语 ×${SHIYUS.length}、评论 ×3`
+  );
 }
 
 main()

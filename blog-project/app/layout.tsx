@@ -11,13 +11,25 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource/ibm-plex-mono/600.css";
 import "./globals.css";
 
+const SITE_URL = "https://www.puxiaoshuai.top";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "大道至简 · 时光是画在卷上的河流",
     template: "%s · 大道至简",
   },
   description:
     "一个记录 AI、技术、设计日常与随手拾语的独立博客。时光是画在卷上的河流。",
+  openGraph: {
+    title: "大道至简 · 时光是画在卷上的河流",
+    description: "一个记录 AI、技术、设计日常与随手拾语的独立博客。",
+    type: "website",
+    locale: "zh_CN",
+    siteName: "大道至简",
+    url: SITE_URL,
+  },
+  robots: { index: true, follow: true },
 };
 
 /** 防闪白：同步读取主题，先于首帧渲染 */
