@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ═══════════════════════════════════════════════════
+   纸感编辑风 · 设计系统 token
+   亮 / 暗两套，全部 rgb(r g b) 三段数字，
+   供 Tailwind 颜色与透明度修饰符使用。
+   ═══════════════════════════════════════════════════ */
+:root {
+  --c-paper: 246 241 231;      /* 暖纸 */
+  --c-paper2: 237 229 211;     /* 次级纸 */
+  --c-card: 253 251 244;       /* 卡片 */
+  --c-ink: 33 28 22;           /* 墨黑 */
+  --c-inkSoft: 111 102 87;     /* 次墨 */
+  --c-line: 217 205 185;       /* 分割线 */
+  --c-lineSoft: 231 222 203;   /* 浅分割线 */
+  --c-accent: 166 61 47;       /* 朱红 */
+  --c-accentDeep: 126 42 31;   /* 朱红加深 */
+  --c-gold: 185 138 47;        /* 金 */
+  --c-sage: 111 125 94;        /* 青灰 */
+  --c-night: 33 28 22;         /* 恒定深色带 */
+  --c-nightText: 246 241 231;  /* 深色带上文字 */
+}
+
+html.dark {
+  --c-paper: 27 24 20;
+  --c-paper2: 37 32 26;
+  --c-card: 34 30 24;
+  --c-ink: 244 239 229;
+  --c-inkSoft: 172 162 144;
+  --c-line: 66 57 46;
+  --c-lineSoft: 47 40 33;
+  --c-accent: 208 95 74;
+  --c-accentDeep: 228 120 96;
+  --c-gold: 208 165 90;
+  --c-sage: 139 156 122;
+  --c-night: 16 14 11;
+  --c-nightText: 244 239 229;
+}
+
+/* ═══ Tailwind 颜色映射（自动跟随主题翻转）═══ */
+@theme inline {
+  --color-paper: rgb(var(--c-paper));
+  --color-paper2: rgb(var(--c-paper2));
+  --color-card: rgb(var(--c-card));
+  --color-ink: rgb(var(--c-ink));
+  --color-inksoft: rgb(var(--c-inkSoft));
+  --color-line: rgb(var(--c-line));
+  --color-linesoft: rgb(var(--c-lineSoft));
+  --color-accent: rgb(var(--c-accent));
+  --color-accentdeep: rgb(var(--c-accentDeep));
+  --color-gold: rgb(var(--c-gold));
+  --color-sage: rgb(var(--c-sage));
+  --color-night: rgb(var(--c-night));
+  --color-nighttext: rgb(var(--c-nightText));
+
+  /* 字体（@fontsource 家族名） */
+  --font-sans: "Noto Sans SC", system-ui, sans-serif;
+  --font-serif: "Noto Serif SC", "Songti SC", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* ═══ 基础 ═══ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: rgb(var(--c-paper));
+    color: rgb(var(--c-ink));
+    font-family: "Noto Sans SC", system-ui, -apple-system, "PingFang SC",
+      "Microsoft YaHei", sans-serif;
+  }
+  ::selection {
+    background: rgb(var(--c-accent) / 0.18);
+  }
+}
+
+/* ═══ 纸面颗粒 · 噪点 ═══ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+}
+
+/* ═══ 组件 ═══ */
+@layer components {
+  /* 纸框投影：硬偏移，无模糊 */
+  .frame {
+    box-shadow: 6px 6px 0 0 rgb(var(--c-ink) / 0.14);
+  }
+
+  /* Eyebrow mono 小标签 */
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+  }
+
+  /* 标签 chip：1px 同色描边，mono */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid currentColor;
+    padding: 0.18rem 0.6rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+  .chip-accent {
+    color: rgb(var(--c-accent));
+  }
+  .chip-soft {
+    color: rgb(var(--c-inkSoft));
+  }
+
+  /* 编辑体下划线动画 */
+  .u-link {
+    position: relative;
+  }
+  .u-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 1.5px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .u-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* 卡片悬浮：上浮 + 硬影 */
+  .card-raise {
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.4s,
+      border-color 0.3s;
+  }
+  .card-raise:hover {
+    transform: translate(-2px, -4px);
+    box-shadow: 10px 12px 0 0 rgb(var(--c-ink) / 0.16);
+  }
+}
+
+/* ═══ 动效 ═══ */
+@layer utilities {
+  /* 入场上浮（用内联 style 错峰 delay） */
+  .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    animation: revealUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes revealUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 墨水扫入 */
+  .ink-wipe {
+    display: inline-block;
+    animation: inkWipe 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes inkWipe {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  /* 印章呼吸 */
+  .seal {
+    animation: sealBreath 5s ease-in-out infinite;
+  }
+  @keyframes sealBreath {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.06);
+    }
+  }
+}

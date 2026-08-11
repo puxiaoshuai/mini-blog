@@ -1,0 +1,83 @@
+// ═══ Prisma Schema 7 · 大道至简博客（对齐 readme.md 数据表）═══
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite" // 开发用，生产可切换 postgresql
+}
+
+model Post {
+  id         String   @id @default(cuid())
+  title      String
+  slug       String   @unique
+  excerpt    String?
+  content    String // MDX 文本
+  coverImage String?
+  published  Boolean  @default(false)
+  views      Int      @default(0)
+  likes      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  authorId String
+  author   User     @relation(fields: [authorId], references: [id])
+  tags     Tag[]    @relation()
+  comments Comment[]
+
+  @@index([published, createdAt])
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String? // 仅在凭证登录时使用
+  name      String?
+  image     String?
+  role      Role     @default(USER)
+  posts     Post[]
+  comments  Comment[]
+  shiyus    Shiyu[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  published Boolean  @default(true)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Shiyu {
+  id        String   @id @default(cuid())
+  content   String // 一句话正文
+  images    String? // 配图（JSON 数组，可为空）
+  pinned    Boolean  @default(false) // 置顶
+  published Boolean  @default(true) // 发布状态
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, createdAt])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
