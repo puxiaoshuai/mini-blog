@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PostPreview from "./PostPreview";
 
 export type PostFormData = {
   id?: string;
@@ -28,6 +29,7 @@ export default function PostForm({ post }: { post?: PostFormData }) {
   const [tags, setTags] = useState(post?.tags.join(", ") ?? "");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [mode, setMode] = useState<"edit" | "preview">("edit");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -89,14 +91,49 @@ export default function PostForm({ post }: { post?: PostFormData }) {
       </div>
 
       <div>
-        <label htmlFor="content" className={labelCls}>正文（MDX）*</label>
-        <textarea
-          id="content" required value={content} onChange={(e) => setContent(e.target.value)}
-          rows={16}
-          className="w-full border border-line bg-paper px-3 py-3 font-mono text-[13px] leading-relaxed transition-colors focus:border-ink focus:outline-none"
-          placeholder={"## 小标题\n\n正文内容，支持 **加粗**、`行内代码`、```代码块```、表格…"}
-        />
-        <p className="mt-1 font-mono text-[10px] text-inksoft">支持 Markdown / MDX 语法，首字下沉由前台排版自动处理</p>
+        <div className="mb-1.5 flex items-center justify-between">
+          <label
+            htmlFor="content"
+            className="block font-mono text-[10px] tracking-[.2em] text-inksoft"
+          >
+            正文（MDX）*
+          </label>
+          <div className="flex border border-line">
+            <button
+              type="button"
+              onClick={() => setMode("edit")}
+              className={`h-7 px-3 font-mono text-[10px] tracking-[.15em] transition-colors ${
+                mode === "edit" ? "bg-night text-nighttext" : "text-inksoft hover:text-ink"
+              }`}
+            >
+              编辑
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("preview")}
+              className={`h-7 border-l border-line px-3 font-mono text-[10px] tracking-[.15em] transition-colors ${
+                mode === "preview" ? "bg-night text-nighttext" : "text-inksoft hover:text-ink"
+              }`}
+            >
+              预览
+            </button>
+          </div>
+        </div>
+
+        {mode === "edit" ? (
+          <textarea
+            id="content" required value={content} onChange={(e) => setContent(e.target.value)}
+            rows={16}
+            className="w-full border border-line bg-paper px-3 py-3 font-mono text-[13px] leading-relaxed transition-colors focus:border-ink focus:outline-none"
+            placeholder={"## 小标题\n\n正文内容，支持 **加粗**、`行内代码`、```代码块```、表格…"}
+          />
+        ) : (
+          <PostPreview content={content} />
+        )}
+
+        <p className="mt-1 font-mono text-[10px] text-inksoft">
+          支持 Markdown / MDX 语法（含 ```mermaid 图表），首字下沉由前台排版自动处理
+        </p>
       </div>
 
       <div>

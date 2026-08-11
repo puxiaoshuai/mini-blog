@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import Mermaid from "./Mermaid";
 
 /** 纸感编辑风 · MDX 自定义组件（正文排版） */
 
@@ -120,6 +121,7 @@ function Em(props: ComponentProps<"em">) {
 }
 
 const MDXComponents = {
+  Mermaid,
   h1: H1,
   h2: H2,
   h3: H3,
