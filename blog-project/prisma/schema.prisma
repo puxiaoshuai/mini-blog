@@ -65,6 +65,7 @@ model Comment {
 
 model Shiyu {
   id        String   @id @default(cuid())
+  no        Int      @default(0) // 流水序号（展示 N°xxx，新建时取 max+1）
   content   String // 一句话正文
   images    String? // 配图（JSON 数组，可为空）
   pinned    Boolean  @default(false) // 置顶

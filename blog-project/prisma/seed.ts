@@ -188,6 +188,7 @@ async function main() {
   for (const s of SHIYUS) {
     await prisma.shiyu.create({
       data: {
+        no: parseInt(s.no, 10), // N°036 → 36
         content: s.content,
         images: s.images ? JSON.stringify(s.images) : null,
         pinned: s.pinned ?? false,

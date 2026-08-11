@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Shiyu" ADD COLUMN     "no" INTEGER NOT NULL DEFAULT 0;
