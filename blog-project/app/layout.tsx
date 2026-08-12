@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import LocatorSetup from "@/components/common/LocatorSetup";
 // 字体走 npm（@fontsource），随安装下载，国内网络无需访问 Google Fonts
 import "@fontsource/noto-serif-sc/500.css";
 import "@fontsource/noto-serif-sc/700.css";
@@ -44,6 +45,7 @@ export default function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning>
       <body className="bg-paper text-ink font-sans antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        {process.env.NODE_ENV === "development" && <LocatorSetup />}
         {children}
       </body>
     </html>
