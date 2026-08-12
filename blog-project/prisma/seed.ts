@@ -2,6 +2,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/generated/prisma/client";
 import bcrypt from "bcryptjs";
+import { calcReadingMinutes } from "../lib/utils";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -128,12 +129,7 @@ async function main() {
   // 注意先删评论（Comment→Post 外键），再删文章，否则 FK 违约
   await prisma.comment.deleteMany();
   await prisma.post.deleteMany();
-  const helloPost = await prisma.post.create({
-    data: {
-      title: "你好，大道至简",
-      slug: "hello-world",
-      excerpt: "从 WordPress 迁移到 Next.js 的第一篇。",
-      content: [
+  const helloContent = [
         "## 为什么换到 Next.js",
         "",
         "从 WordPress（Qzdy 主题）迁移而来，想要更快的首屏、更自由的排版，以及 MDX 带来的写作体验。",
@@ -147,20 +143,21 @@ async function main() {
         "## 迁移计划",
         "",
         "后续把真实文章逐步搬进来，见仓库根目录的《任务清单》。",
-      ].join("\n"),
+  ].join("\n");
+
+  const helloPost = await prisma.post.create({
+    data: {
+      title: "你好，大道至简",
+      slug: "hello-world",
+      excerpt: "从 WordPress 迁移到 Next.js 的第一篇。",
+      content: helloContent,
+      readingMinutes: calcReadingMinutes(helloContent),
       published: true,
       authorId: admin.id,
       tags: { connect: [{ id: tags.claude.id }] },
     },
   });
-  await prisma.post.create({
-    data: {
-      title: "TypeScript: interface vs type 终极指南",
-      slug: "typescript-tips",
-      excerpt: "interface 定义是什么，type 描述什么关系。",
-      coverImage:
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=1400&auto=format&fit=crop",
-      content: [
+  const tsContent = [
         "## interface 与 type 的分工",
         "",
         "`interface` 定义是什么（对象契约），`type` 描述什么关系（任意类型组合）。",
@@ -190,7 +187,17 @@ async function main() {
         "",
         "- 库的公开 API / 可扩展对象 → `interface`",
         "- 联合、元组、工具类型组合 → `type`",
-      ].join("\n"),
+  ].join("\n");
+
+  await prisma.post.create({
+    data: {
+      title: "TypeScript: interface vs type 终极指南",
+      slug: "typescript-tips",
+      excerpt: "interface 定义是什么，type 描述什么关系。",
+      coverImage:
+        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=1400&auto=format&fit=crop",
+      content: tsContent,
+      readingMinutes: calcReadingMinutes(tsContent),
       published: true,
       authorId: admin.id,
       tags: { connect: [{ id: tags.typescript.id }] },

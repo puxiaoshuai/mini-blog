@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getPublishedPosts, getStats } from "@/lib/posts";
+import { getRecentPublishedPosts, getStats } from "@/lib/posts";
 import { formatDate } from "@/lib/utils";
 import { PROJECTS } from "@/lib/projects";
+import PostCard, { PostCover } from "@/components/posts/PostCard";
 
 /** 首页：刊头 / 卷首诗 / 数据台账 / 最近文章 / 项目 / 订阅带 */
 const STATS_LABELS = ["篇文章", "次浏览", "个标签", "条拾语"];
 
 export default async function Home() {
-  const [stats, posts] = await Promise.all([getStats(), getPublishedPosts()]);
+  const [stats, posts] = await Promise.all([getStats(), getRecentPublishedPosts(5)]);
   const statsValues = [stats.posts, stats.views, stats.tags, stats.shiyus];
   const [featured, ...rest] = posts;
 
@@ -116,30 +117,14 @@ export default async function Home() {
                   href={`/posts/${featured.slug}`}
                   className="card-raise grid h-full border border-line bg-card transition-colors hover:border-ink md:grid-cols-2"
                 >
-                  <div className="relative aspect-[16/9] overflow-hidden border-b border-line md:aspect-auto md:border-b-0 md:border-r">
-                    {featured.coverImage ? (
-                      <Image
-                        src={featured.coverImage}
-                        alt={featured.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-paper2">
-                        <span className="chip text-ink">
-                          {featured.tags[0]?.name ?? "文章"}
-                        </span>
-                      </div>
-                    )}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ink/10" />
-                    {featured.tags[0] && (
-                      <span className="chip absolute bottom-3 left-3 bg-paper/90 text-ink">
-                        {featured.tags[0].name}
-                      </span>
-                    )}
-                  </div>
+                  <PostCover
+                    image={featured.coverImage}
+                    alt={featured.title}
+                    tagName={featured.tags[0]?.name}
+                    className="aspect-[16/9] border-b border-line md:aspect-auto md:border-b-0 md:border-r"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
+                  />
                   <div className="flex flex-col justify-center gap-3 p-6 md:p-8">
                     <p className="font-mono text-[10px] tracking-[.15em] text-inksoft">
                       {formatDate(featured.createdAt)} · {featured.readingMinutes} MIN · {featured.views} 阅
@@ -174,52 +159,7 @@ export default async function Home() {
 
             {/* 普通卡片（最多 4 张） */}
             {rest.slice(0, 4).map((post, i) => (
-              <article
-                key={post.id}
-                className="reveal"
-                style={{ animationDelay: `${(i + 1) * 0.08}s` }}
-              >
-                <Link
-                  href={`/posts/${post.slug}`}
-                  className="card-raise group block h-full border border-line bg-card transition-colors hover:border-ink"
-                >
-                  <div className="relative aspect-[16/9] overflow-hidden border-b border-line">
-                    {post.coverImage ? (
-                      <Image
-                        src={post.coverImage}
-                        alt={post.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-paper2">
-                        <span className="chip text-ink">{post.tags[0]?.name ?? "文章"}</span>
-                      </div>
-                    )}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ink/10" />
-                    {post.tags[0] && (
-                      <span className="chip absolute bottom-3 left-3 bg-paper/90 text-ink">
-                        {post.tags[0].name}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-5">
-                    <p className="font-mono text-[10px] tracking-[.15em] text-inksoft">
-                      {formatDate(post.createdAt)} · {post.readingMinutes} MIN · {post.views} 阅
-                    </p>
-                    <h3 className="title-hover mt-2 font-serif text-lg font-bold leading-snug transition-colors group-hover:text-accent">
-                      {post.title}
-                    </h3>
-                    {post.excerpt && (
-                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-inksoft">
-                        {post.excerpt}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              </article>
+              <PostCard key={post.id} post={post} delay={`${(i + 1) * 0.08}s`} />
             ))}
           </div>
         )}

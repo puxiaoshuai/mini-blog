@@ -13,9 +13,9 @@ export type PostCard = {
   tags: { name: string; slug: string }[];
 };
 
-/** 拉取已发布文章卡片（分页内部共用），含封面、阅数、阅读时长 */
+/** 拉取已发布文章卡片（分页内部共用）。readingMinutes 发布时算好入库，列表不再拉正文 */
 async function fetchPostCards(skip: number, take: number): Promise<PostCard[]> {
-  const rows = await prisma.post.findMany({
+  return prisma.post.findMany({
     where: { published: true },
     orderBy: { createdAt: "desc" },
     skip,
@@ -27,20 +27,27 @@ async function fetchPostCards(skip: number, take: number): Promise<PostCard[]> {
       excerpt: true,
       coverImage: true,
       views: true,
-      content: true,
+      readingMinutes: true,
       createdAt: true,
       tags: { select: { name: true, slug: true } },
     },
   });
-  return rows.map(({ content, ...p }) => ({
-    ...p,
-    readingMinutes: Math.max(1, Math.round(content.length / 400)),
-  }));
 }
 
-/** 已发布文章全量（首页/静态参数/sitemap 用） */
-export async function getPublishedPosts(): Promise<PostCard[]> {
-  return fetchPostCards(0, 100_000);
+/** 首页「最近文章」：取最新 N 篇卡片（默认 5：1 精选 + 4 普通） */
+export async function getRecentPublishedPosts(limit = 5): Promise<PostCard[]> {
+  return fetchPostCards(0, limit);
+}
+
+/** 已发布文章引用（slug + 时间）：generateStaticParams / sitemap 用，避免拉正文 */
+export async function getPublishedPostRefs(): Promise<
+  { slug: string; createdAt: Date }[]
+> {
+  return prisma.post.findMany({
+    where: { published: true },
+    orderBy: { createdAt: "desc" },
+    select: { slug: true, createdAt: true },
+  });
 }
 
 /** 已发布文章分页（文章列表页用） */
@@ -118,7 +125,7 @@ export async function getPublishedComments(postId: string) {
 export async function searchPosts(q: string): Promise<PostCard[]> {
   const kw = q.trim();
   if (!kw) return [];
-  const rows = await prisma.post.findMany({
+  return prisma.post.findMany({
     where: {
       published: true,
       OR: [
@@ -135,15 +142,11 @@ export async function searchPosts(q: string): Promise<PostCard[]> {
       excerpt: true,
       coverImage: true,
       views: true,
-      content: true,
+      readingMinutes: true,
       createdAt: true,
       tags: { select: { name: true, slug: true } },
     },
   });
-  return rows.map(({ content, ...p }) => ({
-    ...p,
-    readingMinutes: Math.max(1, Math.round(content.length / 400)),
-  }));
 }
 
 /** 管理端：按 id 取文章（含草稿、标签名），供编辑表单 */

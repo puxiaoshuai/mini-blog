@@ -15,12 +15,13 @@ model Post {
   slug       String   @unique
   excerpt    String?
   content    String // MDX 文本
-  coverImage String?
-  published  Boolean  @default(false)
-  views      Int      @default(0)
-  likes      Int      @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  coverImage     String?
+  published      Boolean  @default(false)
+  views          Int      @default(0)
+  likes          Int      @default(0)
+  readingMinutes Int      @default(0) // 阅读时长（发布时按正文长度算好入库，列表查询免拉正文）
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   authorId String
   author   User     @relation(fields: [authorId], references: [id])

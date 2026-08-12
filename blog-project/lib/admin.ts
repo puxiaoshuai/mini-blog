@@ -56,15 +56,26 @@ export async function getPendingComments(limit = 5) {
   });
 }
 
-/** 全部评论（含文章名），后台评论管理 */
-export async function getAdminComments() {
-  return prisma.comment.findMany({
+/** 后台评论分页（含文章名），按时间倒序 */
+export async function getAdminComments({ page = 1, pageSize = 10 } = {}) {
+  const total = await prisma.comment.count();
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const items = await prisma.comment.findMany({
     orderBy: { createdAt: "desc" },
+    skip: (safePage - 1) * pageSize,
+    take: pageSize,
     include: {
       post: { select: { title: true, slug: true } },
       author: { select: { name: true, email: true } },
     },
   });
+  return { items, total, page: safePage, pageSize, totalPages };
+}
+
+/** 待审核评论数（评论区头部徽标） */
+export async function getPendingCommentCount() {
+  return prisma.comment.count({ where: { published: false } });
 }
 
 /** 后台拾语分页（含草稿），置顶在前、按时间倒序 */

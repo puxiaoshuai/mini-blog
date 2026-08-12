@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPostBySlug, getPublishedPosts, getAdjacentPosts, getPublishedComments } from "@/lib/posts";
+import { getPostBySlug, getPublishedPostRefs, getAdjacentPosts, getPublishedComments } from "@/lib/posts";
 import { renderMDX, getToc } from "@/lib/mdx";
 import { formatDate } from "@/lib/utils";
 import Toc from "@/components/posts/Toc";
@@ -12,7 +12,7 @@ import PostInteractions from "@/components/posts/PostInteractions";
 type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
-  const posts = await getPublishedPosts();
+  const posts = await getPublishedPostRefs();
   return posts.map((p) => ({ slug: p.slug }));
 }
 
@@ -50,7 +50,7 @@ export default async function PostPage({ params }: { params: Params }) {
   ]);
 
   const authorName = post.author.name ?? "博主";
-  const readingMinutes = Math.max(1, Math.round(post.content.length / 400));
+  const readingMinutes = post.readingMinutes;
 
   return (
     <div className="mx-auto max-w-6xl px-5">

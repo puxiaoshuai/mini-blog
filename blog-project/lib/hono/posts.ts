@@ -5,6 +5,13 @@ import { upsertTags, getPublishedPostsPage } from "@/lib/posts";
 import { requireAdmin } from "@/lib/auth";
 import { revalidatePostPaths } from "@/lib/revalidate";
 import { randomCover } from "@/lib/coverPresets";
+import { calcReadingMinutes } from "@/lib/utils";
+import { getClientIp } from "@/lib/hono/ip";
+import { checkRateLimit } from "@/lib/hono/rateLimit";
+
+/** 阅/赞接口服务端限流：同一 IP 同一文章的最小间隔（前端已有会话去重，此为防线） */
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX = 1;
 
 type PostBody = {
   title?: string;
@@ -48,12 +55,14 @@ export const posts = new Hono()
     const tagIds = await upsertTags(body.tags ?? []);
 
     try {
+      const content = body.content ?? "";
       const post = await prisma.post.create({
         data: {
           title,
           slug,
           excerpt: body.excerpt?.trim() || null,
-          content: body.content ?? "",
+          content,
+          readingMinutes: calcReadingMinutes(content),
           coverImage: body.coverImage?.trim() || randomCover(),
           published: body.published ?? true,
           authorId: session.userId,
@@ -109,13 +118,15 @@ export const posts = new Hono()
     const tagIds = body.tags ? await upsertTags(body.tags) : undefined;
 
     try {
+      const content = body.content ?? existing.content;
       const post = await prisma.post.update({
         where: { id },
         data: {
           title: body.title?.trim() ?? existing.title,
           slug,
           excerpt: "excerpt" in body ? (body.excerpt?.trim() || null) : existing.excerpt,
-          content: body.content ?? existing.content,
+          content,
+          readingMinutes: calcReadingMinutes(content),
           coverImage: "coverImage" in body ? (body.coverImage?.trim() || null) : existing.coverImage,
           published: body.published ?? existing.published,
           tags: tagIds ? { set: [], connect: tagIds.map((tid) => ({ id: tid })) } : undefined,
@@ -149,9 +160,13 @@ export const posts = new Hono()
     revalidatePostPaths(existing.slug, existing.tags.map((t) => t.slug));
     return c.json({ ok: true });
   })
-  // POST /api/posts/:id/like — 点赞 +1（公开；防重复刷新由前端控制）
+  // POST /api/posts/:id/like — 点赞 +1（公开；前端防连点 + 服务端按 IP 限流）
   .post("/:id/like", async (c) => {
     const id = c.req.param("id");
+    const ip = getClientIp(c);
+    const wait = ip ? checkRateLimit(`like:${ip}:${id}`, RATE_WINDOW_MS, RATE_MAX) : 0;
+    if (wait > 0) return c.json({ error: `操作太频繁，请 ${wait} 秒后再试` }, 429);
+
     const post = await prisma.post.findUnique({ where: { id }, select: { id: true } });
     if (!post) return c.json({ error: "文章不存在" }, 404);
 
@@ -162,9 +177,13 @@ export const posts = new Hono()
     });
     return c.json({ likes: updated.likes });
   })
-  // POST /api/posts/:id/view — 浏览 +1（公开；前端按会话去重）
+  // POST /api/posts/:id/view — 浏览 +1（公开；前端按会话去重 + 服务端按 IP 限流）
   .post("/:id/view", async (c) => {
     const id = c.req.param("id");
+    const ip = getClientIp(c);
+    const wait = ip ? checkRateLimit(`view:${ip}:${id}`, RATE_WINDOW_MS, RATE_MAX) : 0;
+    if (wait > 0) return c.json({ error: `操作太频繁，请 ${wait} 秒后再试` }, 429);
+
     const post = await prisma.post.findUnique({ where: { id }, select: { id: true } });
     if (!post) return c.json({ error: "文章不存在" }, 404);
 

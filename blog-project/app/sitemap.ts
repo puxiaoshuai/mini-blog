@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getPublishedPosts } from "@/lib/posts";
+import { getPublishedPostRefs } from "@/lib/posts";
 
 const BASE = "https://www.puxiaoshuai.top";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getPublishedPosts();
+  const posts = await getPublishedPostRefs();
   const staticRoutes: MetadataRoute.Sitemap = ["", "/posts", "/tags", "/shiyu", "/about", "/search"].map(
     (p) => ({ url: `${BASE}${p}`, lastModified: new Date() })
   );

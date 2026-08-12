@@ -11,6 +11,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/generated/prisma/client";
+import { calcReadingMinutes } from "../lib/utils";
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
@@ -93,6 +94,7 @@ async function main() {
         slug: `test-post-${num}`,
         excerpt: `第 ${i} 篇测试文章的摘要，填充首页文章网格与搜索命中。`,
         content: postContent(i),
+        readingMinutes: calcReadingMinutes(postContent(i)),
         coverImage: i % 3 === 0 ? COVERS[i % COVERS.length] : null,
         published: i % 10 !== 0, // 每第 10 篇为草稿
         views: Math.floor(Math.random() * 500),

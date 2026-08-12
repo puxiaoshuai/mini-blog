@@ -1,21 +1,33 @@
 import Link from "next/link";
-import { getAdminComments } from "@/lib/admin";
+import { getAdminComments, getPendingCommentCount } from "@/lib/admin";
 import { formatDate } from "@/lib/utils";
 import ApproveCommentButton from "@/components/admin/ApproveCommentButton";
 import DeleteButton from "@/components/admin/DeleteButton";
+import Pagination from "@/components/posts/Pagination";
 
 export const metadata = { title: "评论管理" };
 
-export default async function AdminCommentsPage() {
-  const comments = await getAdminComments();
-  const pending = comments.filter((c) => !c.published).length;
+const PAGE_SIZE = 10;
+
+export default async function AdminCommentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const [pending, { items: comments, total, page: currentPage, totalPages }] =
+    await Promise.all([
+      getPendingCommentCount(),
+      getAdminComments({ page, pageSize: PAGE_SIZE }),
+    ]);
 
   return (
     <div className="space-y-6">
       <header className="flex items-center gap-3">
         <h1 className="font-serif text-2xl font-black">评论管理</h1>
         <span className="pt-1 font-mono text-[10px] tracking-[.25em] text-inksoft">
-          COMMENTS · {comments.length}（待审 {pending}）
+          COMMENTS · {total}（待审 {pending}）
         </span>
       </header>
 
@@ -24,8 +36,9 @@ export default async function AdminCommentsPage() {
           还没有评论
         </div>
       ) : (
-        <ul className="space-y-4">
-          {comments.map((c) => (
+        <>
+          <ul className="space-y-4">
+            {comments.map((c) => (
             <li key={c.id} className={`border border-line bg-card p-6 ${!c.published ? "border-l-2 border-l-accent" : ""}`}>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-mono text-[10px] text-inksoft">
@@ -67,8 +80,14 @@ export default async function AdminCommentsPage() {
                 </div>
               </div>
             </li>
-          ))}
-        </ul>
+            ))}
+          </ul>
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            basePath="/dashboard/comments"
+          />
+        </>
       )}
     </div>
   );
