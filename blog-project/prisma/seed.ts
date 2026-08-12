@@ -93,7 +93,7 @@ async function main() {
     create: {
       email: "1372553910@qq.com",
       username: "admin",
-      name: "蒲小帅",
+      name: "Leo",
       password: passwordHash,
       role: "ADMIN",
     },

@@ -78,7 +78,7 @@ export default async function PostPage({ params }: { params: Params }) {
             description: post.excerpt ?? undefined,
             datePublished: post.createdAt.toISOString(),
             dateModified: post.updatedAt.toISOString(),
-            author: { "@type": "Person", name: post.author.name ?? "蒲小帅" },
+            author: { "@type": "Person", name: post.author.name ?? "Leo" },
             ...(post.coverImage ? { image: post.coverImage } : {}),
           }),
         }}
