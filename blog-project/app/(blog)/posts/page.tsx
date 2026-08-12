@@ -32,7 +32,9 @@ export default async function PostsPage({
       </div>
       <h1 className="font-serif text-4xl font-black md:text-5xl">文章</h1>
       <p className="mt-3 text-sm text-inksoft">
-        共 {total} 篇 · 技术、AI 工具与日常
+        共{" "}
+        <span className="font-serif font-black text-accent">{total}</span>{" "}
+        篇 · 技术、AI 工具与日常
       </p>
 
       <div className="mt-10">
@@ -43,31 +45,54 @@ export default async function PostsPage({
             <Link
               key={post.id}
               href={`/posts/${post.slug}`}
-              className="group flex items-baseline gap-5 border-b border-line py-6 transition-colors hover:bg-card/50 md:gap-8"
+              className="group relative grid gap-2.5 border-b border-line py-7 transition-colors hover:bg-card/40 md:grid-cols-[6rem_1fr_10rem] md:items-start md:gap-6 md:py-8 md:px-4"
             >
-              <span className="shrink-0 font-mono text-xs text-inksoft">
-                N°{String(startNo - i).padStart(3, "0")}
+              {/* 左侧大编号 */}
+              <span className="flex items-center justify-between gap-4 md:block">
+                <span className="font-serif text-2xl font-black leading-none text-ink/25 transition-colors duration-300 group-hover:text-accent md:text-3xl">
+                  {String(startNo - i).padStart(3, "0")}
+                </span>
+                <span className="font-mono text-[11px] text-inksoft md:hidden">
+                  {formatDate(post.createdAt)}
+                </span>
               </span>
-              <div className="min-w-0 flex-1">
-                <h2 className="font-serif text-xl font-bold leading-snug transition-colors group-hover:text-accent">
-                  {post.title}
-                </h2>
-                {post.excerpt && (
-                  <p className="mt-1.5 truncate text-sm text-inksoft">
-                    {post.excerpt}
-                  </p>
-                )}
-                <div className="mt-3 flex flex-wrap items-center gap-3">
-                  {/* 卡片整体是 Link，内部标签用 span，避免 <a> 嵌套 <a> */}
+
+              {/* 主体 */}
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
                   {post.tags.map((t) => (
                     <span key={t.slug} className="chip chip-soft">
                       {t.name}
                     </span>
                   ))}
-                  <span className="font-mono text-[11px] text-inksoft">
-                    {formatDate(post.createdAt)}
-                  </span>
                 </div>
+                <h2 className="title-hover mt-3 font-serif text-xl font-black leading-snug md:text-2xl">
+                  {post.title}
+                </h2>
+                {post.excerpt && (
+                  <p className="mt-2.5 line-clamp-2 max-w-2xl text-sm leading-relaxed text-inksoft">
+                    {post.excerpt}
+                  </p>
+                )}
+              </div>
+
+              {/* 右侧 meta */}
+              <div className="flex items-center justify-between gap-4 md:flex-col md:items-end md:gap-2 md:text-right">
+                <span className="hidden font-mono text-[11px] text-inksoft md:block">
+                  {formatDate(post.createdAt)}
+                </span>
+                <span className="font-mono text-[11px] text-inksoft">
+                  {post.readingMinutes} MIN
+                </span>
+                <span className="font-mono text-[11px] text-inksoft">
+                  {post.views} 阅
+                </span>
+                <span className="hidden items-center gap-1.5 font-mono text-[11px] text-accent opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100 md:inline-flex">
+                  阅读
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </span>
               </div>
             </Link>
           ))

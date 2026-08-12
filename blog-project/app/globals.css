@@ -156,6 +156,29 @@ body::before {
     box-shadow: 10px 12px 0 0 rgb(var(--c-ink) / 0.16);
   }
 
+  /* 标题悬浮：朱红下划线扫入（group 内生效） */
+  .title-hover {
+    position: relative;
+    transition: color 0.3s;
+  }
+  .title-hover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    height: 2px;
+    width: 100%;
+    background: rgb(var(--c-accent));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .group:hover .title-hover::after,
+  .title-hover:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
   /* 文章首字下沉 */
   .mdx-body > p:first-of-type::first-letter {
     float: left;

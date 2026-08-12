@@ -123,7 +123,7 @@ export default async function Home() {
                         alt={featured.title}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center bg-paper2">
@@ -132,6 +132,7 @@ export default async function Home() {
                         </span>
                       </div>
                     )}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                     <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ink/10" />
                     {featured.tags[0] && (
                       <span className="chip absolute bottom-3 left-3 bg-paper/90 text-ink">
@@ -143,7 +144,7 @@ export default async function Home() {
                     <p className="font-mono text-[10px] tracking-[.15em] text-inksoft">
                       {formatDate(featured.createdAt)} · {featured.readingMinutes} MIN · {featured.views} 阅
                     </p>
-                    <h3 className="font-serif text-2xl font-black leading-snug transition-colors group-hover:text-accent">
+                    <h3 className="title-hover font-serif text-2xl font-black leading-snug transition-colors group-hover:text-accent">
                       {featured.title}
                     </h3>
                     {featured.excerpt && (
@@ -151,8 +152,20 @@ export default async function Home() {
                         {featured.excerpt}
                       </p>
                     )}
-                    <span className="u-link mt-1 w-fit font-medium text-accent">
-                      阅读全文 →
+                    <span className="u-link mt-1 flex w-fit items-center gap-2 font-medium text-accent">
+                      阅读全文
+                      <svg
+                        className="transition-transform duration-300 group-hover:translate-x-1"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        aria-hidden
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
                     </span>
                   </div>
                 </Link>
@@ -177,13 +190,14 @@ export default async function Home() {
                         alt={post.title}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center bg-paper2">
                         <span className="chip text-ink">{post.tags[0]?.name ?? "文章"}</span>
                       </div>
                     )}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                     <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ink/10" />
                     {post.tags[0] && (
                       <span className="chip absolute bottom-3 left-3 bg-paper/90 text-ink">
@@ -195,7 +209,7 @@ export default async function Home() {
                     <p className="font-mono text-[10px] tracking-[.15em] text-inksoft">
                       {formatDate(post.createdAt)} · {post.readingMinutes} MIN · {post.views} 阅
                     </p>
-                    <h3 className="mt-2 font-serif text-lg font-bold leading-snug transition-colors group-hover:text-accent">
+                    <h3 className="title-hover mt-2 font-serif text-lg font-bold leading-snug transition-colors group-hover:text-accent">
                       {post.title}
                     </h3>
                     {post.excerpt && (
@@ -232,29 +246,30 @@ export default async function Home() {
           {PROJECTS.map((project, i) => (
             <article
               key={project.name}
-              className="card-raise reveal flex flex-col border border-line bg-card transition-colors hover:border-ink"
+              className="card-raise reveal group flex flex-col border border-line bg-card transition-colors hover:border-ink"
               style={{ animationDelay: `${i * 0.08}s` }}
             >
               <a
                 href="#"
-                className="group relative block aspect-[16/10] overflow-hidden border-b border-line"
+                className="relative block aspect-[16/10] overflow-hidden border-b border-line"
               >
                 <Image
                   src={project.image}
                   alt={project.name}
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
                 />
-                <span className="absolute left-3 top-3 chip bg-paper/90 text-ink">
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <span className="absolute left-3 top-3 chip bg-paper/90 text-ink transition-colors duration-300 group-hover:text-accent">
                   {project.no}
                 </span>
-                <span className="absolute bottom-3 right-3 bg-night px-2.5 py-1 font-mono text-[10px] tracking-[.15em] text-nighttext">
+                <span className="absolute bottom-3 right-3 bg-night px-2.5 py-1 font-mono text-[10px] tracking-[.15em] text-nighttext transition-colors duration-300 group-hover:bg-accent">
                   {project.period}
                 </span>
               </a>
               <div className="flex flex-1 flex-col p-6">
-                <h3 className="font-serif text-xl font-black">{project.name}</h3>
+                <h3 className="title-hover font-serif text-xl font-black">{project.name}</h3>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-inksoft">
                   {project.desc}
                 </p>
@@ -307,21 +322,38 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ 订阅带 ═══ */}
+      {/* ═══ 卷末信笺 ═══ */}
       <section className="mx-auto mt-20 max-w-6xl px-5">
-        <div className="flex flex-col items-center justify-between gap-6 bg-night px-8 py-12 text-center text-nighttext md:flex-row md:text-left">
-          <div>
-            <p className="eyebrow text-[10px] text-nighttext/70">NEWSLETTER</p>
-            <p className="mt-3 font-serif text-2xl font-bold">
-              不定期更新，随手一读。
-            </p>
+        <div className="relative overflow-hidden border-y-2 border-ink bg-night px-6 py-16 text-center text-nighttext md:py-20">
+          <div className="mx-auto flex items-center justify-center gap-5">
+            <div className="h-px w-16 bg-nighttext/30 md:w-28" />
+            <span className="seal flex h-10 w-10 items-center justify-center bg-accent font-serif font-black text-nighttext">
+              简
+            </span>
+            <div className="h-px w-16 bg-nighttext/30 md:w-28" />
           </div>
-          <Link
-            href="mailto:1372553910@qq.com"
-            className="border border-nighttext/60 px-6 py-3 font-mono text-xs tracking-[.15em] transition-colors hover:bg-nighttext hover:text-night"
-          >
-            来信 → 1372553910@qq.com
-          </Link>
+          <p className="eyebrow mt-8 text-[10px] text-nighttext/60">
+            卷末信笺 · COLOPHON
+          </p>
+          <p className="mx-auto mt-6 font-serif text-3xl font-black leading-[1.7] md:text-4xl">
+            不定期更新，见字如面。
+            <br />
+            得闲时，随手一读。
+          </p>
+          <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-nighttext/70">
+            欢迎来信，聊聊 AI、技术与生活里那些值得记录的小事。
+          </p>
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <span className="font-mono text-[11px] tracking-[.25em] text-nighttext/60">
+              来信 →
+            </span>
+            <a
+              href="mailto:1372553910@qq.com"
+              className="border border-nighttext/60 px-8 py-3.5 font-mono text-xs tracking-[.2em] transition-colors duration-300 hover:bg-nighttext hover:text-night"
+            >
+              1372553910@qq.com
+            </a>
+          </div>
         </div>
       </section>
     </div>

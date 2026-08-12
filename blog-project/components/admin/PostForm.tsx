@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import PostPreview from "./PostPreview";
+import { COVER_PRESETS } from "@/lib/coverPresets";
 
 export type PostFormData = {
   id?: string;
@@ -137,8 +139,43 @@ export default function PostForm({ post }: { post?: PostFormData }) {
       </div>
 
       <div>
-        <label htmlFor="cover" className={labelCls}>封面图 URL</label>
-        <input id="cover" value={coverImage} onChange={(e) => setCoverImage(e.target.value)} className={inputCls} placeholder="https://…" />
+        <div className="mb-1.5 flex items-center justify-between">
+          <label
+            htmlFor="cover"
+            className="block font-mono text-[10px] tracking-[.2em] text-inksoft"
+          >
+            封面图 URL
+          </label>
+          <button
+            type="button"
+            onClick={() =>
+              setCoverImage(
+                COVER_PRESETS[Math.floor(Math.random() * COVER_PRESETS.length)]
+              )
+            }
+            className="font-mono text-[10px] tracking-[.15em] text-inksoft transition-colors hover:text-accent"
+          >
+            随机换一张 ↻
+          </button>
+        </div>
+        <input
+          id="cover"
+          value={coverImage}
+          onChange={(e) => setCoverImage(e.target.value)}
+          className={inputCls}
+          placeholder="https://…（留空则保存时自动随机选一张 coding 封面）"
+        />
+        {coverImage.startsWith("https://images.unsplash.com/") && (
+          <div className="relative mt-2 aspect-[16/9] w-full overflow-hidden border border-line bg-paper2">
+            <Image
+              src={coverImage}
+              alt="封面预览"
+              fill
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+        )}
       </div>
 
       <label className="flex items-center gap-3 border border-line bg-card px-4 py-3">

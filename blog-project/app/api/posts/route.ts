@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { upsertTags, getPublishedPostsPage } from "@/lib/posts";
 import { requireAdmin } from "@/lib/auth";
 import { revalidatePostPaths } from "@/lib/revalidate";
+import { randomCover } from "@/lib/coverPresets";
 
 type PostBody = {
   title?: string;
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
         slug,
         excerpt: body.excerpt?.trim() || null,
         content: body.content ?? "",
-        coverImage: body.coverImage?.trim() || null,
+        coverImage: body.coverImage?.trim() || randomCover(),
         published: body.published ?? true,
         authorId: session.userId,
         tags: { connect: tagIds.map((id) => ({ id })) },

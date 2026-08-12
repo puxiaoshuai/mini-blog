@@ -115,10 +115,10 @@ export async function getPublishedComments(postId: string) {
  * 全文搜索：标题 / 摘要 / 正文 LIKE 命中（开发与通用环境）。
  * 生产数据量大时可切 PostgreSQL `tsvector` 全文索引（见技术方案 M5-1）。
  */
-export async function searchPosts(q: string) {
+export async function searchPosts(q: string): Promise<PostCard[]> {
   const kw = q.trim();
   if (!kw) return [];
-  return prisma.post.findMany({
+  const rows = await prisma.post.findMany({
     where: {
       published: true,
       OR: [
@@ -133,10 +133,17 @@ export async function searchPosts(q: string) {
       title: true,
       slug: true,
       excerpt: true,
+      coverImage: true,
+      views: true,
+      content: true,
       createdAt: true,
       tags: { select: { name: true, slug: true } },
     },
   });
+  return rows.map(({ content, ...p }) => ({
+    ...p,
+    readingMinutes: Math.max(1, Math.round(content.length / 400)),
+  }));
 }
 
 /** 管理端：按 id 取文章（含草稿、标签名），供编辑表单 */

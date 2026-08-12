@@ -44,3 +44,4 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Tailwind v4**：无 `tailwind.config.js`，配置全在 `app/globals.css` 的 `@theme inline`。
 - **DB 连接**：Windows 下必须用 `127.0.0.1` 而非 `localhost`（IPv6 loopback 会连到 wslrelay 导致 P1001 超时）。
 - **进度（2026-08-11）**：**M1–M5 已完成**（M5-5 真实内容迁移取消）。前台全链（文章/标签/拾语/搜索/评论/阅赞）+ 管理端（`next-auth` v4 登录、`(admin)` 后台 CRUD、`proxy.ts` 守卫）+ SEO/图片优化/暗黑回归。待做：M6 上线（Vercel + 域名 + 真实信息）。
+
