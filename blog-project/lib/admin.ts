@@ -67,10 +67,15 @@ export async function getAdminComments() {
   });
 }
 
-/** 后台全部拾语（含草稿），按时间倒序 */
-export async function getAdminShiyus() {
-  return prisma.shiyu.findMany({
+/** 后台拾语分页（含草稿），置顶在前、按时间倒序 */
+export async function getAdminShiyus({ page = 1, pageSize = 10 } = {}) {
+  const total = await prisma.shiyu.count();
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const items = await prisma.shiyu.findMany({
     orderBy: [{ pinned: "desc" }, { createdAt: "desc" }],
+    skip: (safePage - 1) * pageSize,
+    take: pageSize,
     select: {
       id: true,
       no: true,
@@ -81,12 +86,18 @@ export async function getAdminShiyus() {
       createdAt: true,
     },
   });
+  return { items, total, page: safePage, pageSize, totalPages };
 }
 
-/** 后台全部文章（含草稿） */
-export async function getAdminPosts() {
-  return prisma.post.findMany({
+/** 后台文章分页（含草稿），按更新时间倒序 */
+export async function getAdminPosts({ page = 1, pageSize = 10 } = {}) {
+  const total = await prisma.post.count();
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const items = await prisma.post.findMany({
     orderBy: { updatedAt: "desc" },
+    skip: (safePage - 1) * pageSize,
+    take: pageSize,
     select: {
       id: true,
       title: true,
@@ -100,4 +111,5 @@ export async function getAdminPosts() {
       tags: { select: { name: true, slug: true } },
     },
   });
+  return { items, total, page: safePage, pageSize, totalPages };
 }

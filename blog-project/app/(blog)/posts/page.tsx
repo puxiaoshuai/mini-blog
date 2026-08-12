@@ -22,7 +22,6 @@ export default async function PostsPage({
     page,
     pageSize: PAGE_SIZE,
   });
-  const startNo = total - (page - 1) * pageSize; // 本页首条全局编号
 
   return (
     <section className="mx-auto max-w-6xl px-5 pt-14 md:pt-20">
@@ -41,20 +40,15 @@ export default async function PostsPage({
         {items.length === 0 ? (
           <p className="py-16 text-center text-inksoft">还没有发布文章。</p>
         ) : (
-          items.map((post, i) => (
+          items.map((post) => (
             <Link
               key={post.id}
               href={`/posts/${post.slug}`}
-              className="group relative grid gap-2.5 border-b border-line py-7 transition-colors hover:bg-card/40 md:grid-cols-[6rem_1fr_10rem] md:items-start md:gap-6 md:py-8 md:px-4"
+              className="group relative grid gap-2.5 border-b border-line py-7 transition-colors hover:bg-card/40 md:grid-cols-[1fr_10rem] md:items-start md:gap-6 md:py-8 md:px-4"
             >
-              {/* 左侧大编号 */}
-              <span className="flex items-center justify-between gap-4 md:block">
-                <span className="font-serif text-2xl font-black leading-none text-ink/25 transition-colors duration-300 group-hover:text-accent md:text-3xl">
-                  {String(startNo - i).padStart(3, "0")}
-                </span>
-                <span className="font-mono text-[11px] text-inksoft md:hidden">
-                  {formatDate(post.createdAt)}
-                </span>
+              {/* 移动端日期（桌面端在右侧 meta） */}
+              <span className="font-mono text-[11px] text-inksoft md:hidden">
+                {formatDate(post.createdAt)}
               </span>
 
               {/* 主体 */}

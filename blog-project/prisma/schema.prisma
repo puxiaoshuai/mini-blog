@@ -57,11 +57,14 @@ model Comment {
   id        String   @id @default(cuid())
   content   String
   published Boolean  @default(true)
+  ip        String? // 访客 IP（限流 + 后台审核用，不对公网展示）
   postId    String
   post      Post     @relation(fields: [postId], references: [id])
   authorId  String
   author    User     @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now())
+
+  @@index([ip, createdAt]) // 按 IP 查最近评论（5 分钟限流）
 }
 
 model Shiyu {

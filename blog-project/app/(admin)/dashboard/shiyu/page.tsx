@@ -1,10 +1,24 @@
 import { getAdminShiyus } from "@/lib/admin";
 import ShiyuAdmin, { type AdminShiyu } from "@/components/admin/ShiyuAdmin";
+import Pagination from "@/components/posts/Pagination";
 
 export const metadata = { title: "拾语管理" };
 
-export default async function AdminShiyuPage() {
-  const shiyus = await getAdminShiyus();
+const PAGE_SIZE = 10;
+
+export default async function AdminShiyuPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const {
+    items: shiyus,
+    total,
+    page: currentPage,
+    totalPages,
+  } = await getAdminShiyus({ page, pageSize: PAGE_SIZE });
   const items: AdminShiyu[] = shiyus.map((s) => ({
     id: s.id,
     no: s.no,
@@ -21,7 +35,8 @@ export default async function AdminShiyuPage() {
         <h1 className="font-serif text-2xl font-black">拾语管理</h1>
         <span className="pt-1 font-mono text-[10px] tracking-[.25em] text-inksoft">SHIYU</span>
       </header>
-      <ShiyuAdmin items={items} />
+      <ShiyuAdmin items={items} total={total} />
+      <Pagination page={currentPage} totalPages={totalPages} basePath="/dashboard/shiyu" />
     </div>
   );
 }

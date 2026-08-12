@@ -55,6 +55,9 @@ export default async function AdminCommentsPage() {
                   {c.author.email && (
                     <span className="ml-2 font-mono text-[10px] text-inksoft">{c.author.email}</span>
                   )}
+                  {c.ip && (
+                    <span className="ml-2 font-mono text-[10px] text-inksoft">IP {c.ip}</span>
+                  )}
                 </p>
                 <div className="ml-auto flex w-40 items-center gap-2">
                   <ApproveCommentButton id={c.id} published={c.published} />

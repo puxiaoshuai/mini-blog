@@ -14,6 +14,11 @@ export default function CommentForm({ postId }: { postId: string }) {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // 兜底：个别浏览器 maxLength 对粘贴不严格，提交前再拦一道
+    if (content.trim().length > 100) {
+      setMessage("评论内容最多 100 字");
+      return;
+    }
     setBusy(true);
     setMessage(null);
     try {
@@ -60,11 +65,17 @@ export default function CommentForm({ postId }: { postId: string }) {
         onChange={(e) => setContent(e.target.value)}
         required
         rows={4}
+        maxLength={100}
         placeholder="写下你的留言… *"
         className="w-full border border-line bg-paper px-3 py-3 text-sm leading-relaxed transition-colors focus:border-ink focus:outline-none"
       />
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[10px] text-inksoft">评论经审核后展示 · 请友善发言</p>
+        <p className="font-mono text-[10px] text-inksoft">
+          评论经审核后展示 · 请友善发言
+          <span className={`ml-2 ${content.length > 90 ? "text-accent" : "text-inksoft"}`}>
+            {content.length}/100
+          </span>
+        </p>
         <button
           type="submit"
           disabled={busy}

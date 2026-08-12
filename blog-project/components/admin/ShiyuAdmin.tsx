@@ -16,7 +16,7 @@ export type AdminShiyu = {
 };
 
 /** 后台拾语管理：新建 + 列表 + 发布/置顶切换 + 删除（调 /api/shiyu） */
-export default function ShiyuAdmin({ items }: { items: AdminShiyu[] }) {
+export default function ShiyuAdmin({ items, total }: { items: AdminShiyu[]; total: number }) {
   const router = useRouter();
   const [content, setContent] = useState("");
   const [images, setImages] = useState("");
@@ -109,7 +109,7 @@ export default function ShiyuAdmin({ items }: { items: AdminShiyu[] }) {
         <div className="flex items-center justify-between border-b border-line px-6 pb-4 pt-5">
           <div>
             <h2 className="font-serif text-lg font-black">全部拾语</h2>
-            <p className="mt-0.5 font-mono text-[10px] text-inksoft">SHIYU · {items.length} 条</p>
+            <p className="mt-0.5 font-mono text-[10px] text-inksoft">SHIYU · {total} 条</p>
           </div>
         </div>
         {items.length === 0 ? (

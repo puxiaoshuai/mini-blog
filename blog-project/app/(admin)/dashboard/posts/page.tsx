@@ -2,11 +2,25 @@ import Link from "next/link";
 import { getAdminPosts } from "@/lib/admin";
 import { formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
+import Pagination from "@/components/posts/Pagination";
 
 export const metadata = { title: "文章管理" };
 
-export default async function AdminPostsPage() {
-  const posts = await getAdminPosts();
+const PAGE_SIZE = 10;
+
+export default async function AdminPostsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const {
+    items: posts,
+    total,
+    page: currentPage,
+    totalPages,
+  } = await getAdminPosts({ page, pageSize: PAGE_SIZE });
 
   return (
     <div className="space-y-6">
@@ -14,7 +28,7 @@ export default async function AdminPostsPage() {
         <div className="flex items-center gap-3">
           <h1 className="font-serif text-2xl font-black">文章管理</h1>
           <span className="pt-1 font-mono text-[10px] tracking-[.25em] text-inksoft">
-            POSTS · {posts.length}
+            POSTS · {total}
           </span>
         </div>
         <Link
@@ -99,6 +113,8 @@ export default async function AdminPostsPage() {
           </table>
         </div>
       </div>
+
+      <Pagination page={currentPage} totalPages={totalPages} basePath="/dashboard/posts" />
     </div>
   );
 }
