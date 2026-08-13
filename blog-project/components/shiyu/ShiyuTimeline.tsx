@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { formatDate } from "@/lib/utils";
 
 /** 拾语卡片数据（与 lib/shiyu.ts 的 ShiyuItem 一致，组件侧自带以解耦） */
@@ -36,6 +39,7 @@ export default function ShiyuTimeline({
   items: ShiyuItem[];
   startIndex?: number;
 }) {
+  const t = useTranslations("shiyu");
   if (!items.length) return null;
 
   return (
@@ -62,7 +66,7 @@ export default function ShiyuTimeline({
                 <p className="mt-1 font-mono text-[10px] text-inksoft">
                   N°{String(item.no).padStart(3, "0")}
                 </p>
-                {item.pinned && <span className="chip chip-accent mt-3">置顶</span>}
+                {item.pinned && <span className="chip chip-accent mt-3">{t("pinned")}</span>}
               </div>
 
               {/* 右：一句话 + 配图 */}
@@ -83,7 +87,7 @@ export default function ShiyuTimeline({
                       <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ink/10" />
                     </div>
                     <figcaption className="mt-2.5 font-mono text-[11px] text-inksoft">
-                      配图 · {formatDate(item.createdAt)}
+                      {t("photo", { date: formatDate(item.createdAt) })}
                     </figcaption>
                   </figure>
                 ) : null}

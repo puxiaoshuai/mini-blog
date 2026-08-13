@@ -1,0 +1,196 @@
+{
+  "common": {
+    "siteName": "大道至简",
+    "siteTagline": "时光是画在卷上的河流",
+    "meta": {
+      "titleDefault": "大道至简 · 时光是画在卷上的河流",
+      "titleTemplate": "%s · 大道至简",
+      "description": "一个记录 AI、技术、设计日常与随手拾语的独立博客。时光是画在卷上的河流。"
+    },
+    "nav": {
+      "home": "首页",
+      "posts": "文章",
+      "projects": "项目",
+      "tags": "标签",
+      "shiyu": "拾语",
+      "about": "关于我"
+    },
+    "search": "搜索",
+    "menu": "菜单",
+    "topbar": "✦ 大道至简 · 时光是画在卷上的河流　·　行到水穷处，坐看云起时",
+    "footer": {
+      "desc": "时光是画在卷上的河流。一个记录 AI、技术、设计日常与随手拾语的独立博客。",
+      "writeToMe": "来信",
+      "copyright": "© 2026 大道至简 · 蜀ICP备2023037065号",
+      "builtWith": "DESIGNED LIKE A PRINTED JOURNAL — POWERED BY NEXT.JS · TAILWIND · MDX"
+    },
+    "theme": {
+      "title": "切换日间/夜间",
+      "ariaLabel": "切换深浅色"
+    },
+    "lang": {
+      "switchTo": "切换语言",
+      "label": "EN"
+    },
+    "units": {
+      "viewsCount": "{views} 阅",
+      "minRead": "{minutes} 分钟阅读",
+      "postsCount": "{count} 篇"
+    },
+    "read": "阅读"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "独 立 写 作 · INDEPENDENT WRITING",
+      "title1": "把日子过成文字，",
+      "title2": "把文字酿成时光。",
+      "subtitle": "这里是蒲小帅的线上书房，记下 AI、全栈与生活里那些值得留下的字。",
+      "ctaRecent": "最近文章",
+      "ctaShiyu": "拾语",
+      "keywords": ["AI 工具", "前端", "TypeScript", "数据库", "日记", "图文故事", "拾语"]
+    },
+    "stats": {
+      "posts": "篇文章",
+      "views": "次浏览",
+      "tags": "个标签",
+      "shiyu": "条拾语"
+    },
+    "recent": {
+      "title": "最近文章",
+      "all": "全部文章",
+      "empty": "还没有发布文章。",
+      "readMore": "阅读全文"
+    },
+    "projects": {
+      "eyebrow": "PROJECTS",
+      "handmade": "手作 · HANDMADE",
+      "all": "全部项目",
+      "title": "我的项目",
+      "desc": "一些亲手建造的东西——有的仍在服役，有的还在打磨。每个项目都能看演示、也能翻源码。",
+      "demo": "在线演示",
+      "demoPending": "在线演示（待填链接）",
+      "source": "查看源码",
+      "sourcePending": "源码（待填链接）"
+    },
+    "colophon": {
+      "eyebrow": "卷末信笺 · COLOPHON",
+      "title": "不定期更新，见字如面。",
+      "desc": "欢迎来信，聊聊 AI、技术与生活里那些值得记录的小事。",
+      "write": "来信"
+    }
+  },
+  "posts": {
+    "title": "文章",
+    "eyebrow": "ARTICLES",
+    "subtitle": "共 {total} 篇 · 技术、AI 工具与日常",
+    "empty": "还没有发布文章。"
+  },
+  "post": {
+    "home": "首页",
+    "posts": "文章",
+    "authorFallback": "博主",
+    "updatedOn": "更新于 {date}",
+    "blogger": "博主",
+    "authorDesc": "独立开发者 / Blogger，原博客「大道至简」维护者。正在把 WordPress 上攒了几年的文章与拾语迁移到 Next.js。",
+    "aboutLink": "关于我",
+    "allPosts": "全部文章",
+    "archiveLink": "旧站存档",
+    "prev": "← 上一篇",
+    "prevNone": "没有了，已经是最新文章",
+    "next": "下一篇 →",
+    "nextNone": "没有了，已经是最老文章",
+    "tagsLabel": "标签 / TAGS",
+    "commentsTitle": "读者留言",
+    "commentsMeta": "COMMENTS · {count}",
+    "anonymous": "匿名",
+    "anonInitial": "匿",
+    "writeComment": "发表留言",
+    "tocTitle": "本页目录 · TOC"
+  },
+  "tags": {
+    "title": "标签索引",
+    "eyebrow": "标签索引",
+    "sub": "TAG INDEX · {count} 标签",
+    "h1": "按主题，找文章。",
+    "desc": "左侧是栏目与标签的分类索引，右侧是所选主题下的全部文章归档。从 AI 工具到 TypeScript，从日记到拾语——总有你在找的那一篇。",
+    "empty": "还没有任何标签。",
+    "postsCount": "{count} 篇",
+    "byMonth": "{count} 篇 · 按月归档",
+    "archive": "归档",
+    "archiveSub": "ARCHIVE · BY MONTH",
+    "monthLabel": "{year} 年 {month} 月",
+    "emptyTag": "该标签下还没有文章。",
+    "sidebar": {
+      "title": "全部主题",
+      "sub": "栏目 · 标签 双索引",
+      "byDate": "按时间归档"
+    }
+  },
+  "shiyu": {
+    "eyebrow": "拾语 · COLLECTED WORDS",
+    "typeLabel": "POST_TYPE · WEIYU",
+    "title": "拾语",
+    "intro": "一句话，或一句话加一张图。是随手捡起的光，攒在时间的线上——回头才看得清流向。",
+    "metaCount": "累计 · {count} 条",
+    "metaSince": "起始 · {date}",
+    "metaUpdated": "更新 · {date}",
+    "streamTitle": "拾语流",
+    "streamSub": "MOMENTS · 最近 {count} 条",
+    "writeEyebrow": "拾语 · 发布 · WRITE TO ME",
+    "writeTitle": "捡起的，不只是句子，更是当时的光。",
+    "writeDesc": "一条一条地攒，像集邮。也欢迎来信——把你想说的话，留给我捡起来。",
+    "writeCta": "来信",
+    "pinned": "置顶",
+    "photo": "配图 · {date}",
+    "loadMore": "加载更多拾语（还剩 {remaining} 条）",
+    "loading": "加载中…",
+    "loadError": "加载失败，请稍后再试"
+  },
+  "search": {
+    "title": "搜索",
+    "backHome": "返回首页",
+    "placeholder": "搜索文章标题、摘要或正文…",
+    "button": "搜索",
+    "empty": "输入关键词开始搜索",
+    "noResult": "没有找到与「{q}」相关的文章",
+    "resultCount": "共 {count} 篇命中「{q}」"
+  },
+  "about": {
+    "eyebrow": "关于我 · ABOUT",
+    "title": "一个 TypeScript 全栈程序员",
+    "intro": "白天写前后端，晚上折腾 AI 工具与自动化。相信大道至简：准确、克制、有余韵。",
+    "bioTitle": "个人简介",
+    "skillsTitle": "技术栈",
+    "contactTitle": "联系",
+    "qqMail": "QQ 邮箱",
+    "wechat": "微信"
+  },
+  "blog": {
+    "commentForm": {
+      "tooLong": "评论内容最多 100 字",
+      "submitFailed": "提交失败",
+      "submitted": "评论已提交，待审核通过后展示。",
+      "networkError": "网络错误，请稍后再试",
+      "nickname": "昵称 *",
+      "email": "邮箱（选填，不会公开）",
+      "contentPlaceholder": "写下你的留言… *",
+      "moderation": "评论经审核后展示 · 请友善发言",
+      "submitting": "提交中…",
+      "submit": "提交评论"
+    },
+    "interactions": {
+      "like": "{count} 赞",
+      "views": "{count} 次浏览",
+      "likedTitle": "已赞",
+      "likeTitle": "点赞"
+    },
+    "postCover": {
+      "defaultTag": "文章"
+    },
+    "pagination": {
+      "prev": "← 上一页",
+      "next": "下一页 →",
+      "aria": "分页"
+    }
+  }
+}

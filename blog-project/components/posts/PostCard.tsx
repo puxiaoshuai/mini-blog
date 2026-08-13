@@ -1,14 +1,15 @@
 import Image from "next/image";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { formatDate } from "@/lib/utils";
 import type { PostCard as PostCardData } from "@/lib/posts";
+import { Link } from "@/i18n/navigation";
 import Highlight from "./Highlight";
 
 /**
  * 封面块：图片（或标签占位）+ 渐变遮罩 + 内描边 + 角标标签。
  * 首页精选大卡与普通卡片共用；className / sizes / priority 按布局微调。
  */
-export function PostCover({
+export async function PostCover({
   image,
   alt,
   tagName,
@@ -23,6 +24,7 @@ export function PostCover({
   sizes?: string;
   priority?: boolean;
 }) {
+  const t = await getTranslations("blog.postCover");
   return (
     <div className={`relative overflow-hidden ${className}`}>
       {image ? (
@@ -36,7 +38,7 @@ export function PostCover({
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center bg-paper2">
-          <span className="chip text-ink">{tagName ?? "文章"}</span>
+          <span className="chip text-ink">{tagName ?? t("defaultTag")}</span>
         </div>
       )}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -51,7 +53,7 @@ export function PostCover({
 }
 
 /** 普通文章卡片（杂志网格用）：封面 + 日期/阅读时长/阅数 + 标题 + 摘要；可传 q 高亮命中 */
-export default function PostCard({
+export default async function PostCard({
   post,
   q,
   delay,
@@ -60,6 +62,7 @@ export default function PostCard({
   q?: string;
   delay?: string;
 }) {
+  const t = await getTranslations("common");
   return (
     <article className="reveal" style={delay ? { animationDelay: delay } : undefined}>
       <Link
@@ -69,7 +72,8 @@ export default function PostCard({
         <PostCover image={post.coverImage} alt={post.title} tagName={post.tags[0]?.name} />
         <div className="p-5">
           <p className="font-mono text-[10px] tracking-[.15em] text-inksoft">
-            {formatDate(post.createdAt)} · {post.readingMinutes} MIN · {post.views} 阅
+            {formatDate(post.createdAt)} · {post.readingMinutes} MIN ·{" "}
+            {t("units.viewsCount", { views: post.views })}
           </p>
           <h3 className="title-hover mt-2 font-serif text-lg font-bold leading-snug transition-colors group-hover:text-accent">
             {q ? <Highlight text={post.title} q={q} /> : post.title}

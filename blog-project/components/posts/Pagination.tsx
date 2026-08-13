@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
 /**
  * 分页组件（可复用）· 纸感风格 · 链接式
@@ -30,7 +31,7 @@ const btn =
 const idle = "border-line text-inksoft hover:border-ink hover:text-ink";
 const disabled = "pointer-events-none border-linesoft text-inksoft/50";
 
-export default function Pagination({
+export default async function Pagination({
   page,
   totalPages,
   basePath = "/posts",
@@ -39,19 +40,20 @@ export default function Pagination({
   totalPages: number;
   basePath?: string;
 }) {
+  const t = await getTranslations("blog.pagination");
   if (totalPages <= 1) return null;
 
   // 第 1 页用无参路径，保持 URL 干净（/posts 而非 /posts?page=1）
   const hrefFor = (n: number) => (n === 1 ? basePath : `${basePath}?page=${n}`);
 
   return (
-    <nav aria-label="分页" className="mt-10 flex flex-wrap items-center justify-center gap-2">
+    <nav aria-label={t("aria")} className="mt-10 flex flex-wrap items-center justify-center gap-2">
       {page > 1 ? (
         <Link href={hrefFor(page - 1)} className={`${btn} ${idle}`}>
-          ← 上一页
+          {t("prev")}
         </Link>
       ) : (
-        <span className={`${btn} ${disabled}`}>← 上一页</span>
+        <span className={`${btn} ${disabled}`}>{t("prev")}</span>
       )}
 
       {pageRange(page, totalPages).map((n, idx) =>
@@ -75,10 +77,10 @@ export default function Pagination({
 
       {page < totalPages ? (
         <Link href={hrefFor(page + 1)} className={`${btn} ${idle}`}>
-          下一页 →
+          {t("next")}
         </Link>
       ) : (
-        <span className={`${btn} ${disabled}`}>下一页 →</span>
+        <span className={`${btn} ${disabled}`}>{t("next")}</span>
       )}
     </nav>
   );

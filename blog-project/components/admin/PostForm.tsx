@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import PostPreview from "./PostPreview";
 import { COVER_PRESETS } from "@/lib/coverPresets";
 

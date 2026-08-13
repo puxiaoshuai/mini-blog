@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { formatDate } from "@/lib/utils";
 import DeleteButton from "./DeleteButton";
 

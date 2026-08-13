@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 /** 评论审核：通过 / 转为待审（PUT /api/comments/[id]） */
 export default function ApproveCommentButton({ id, published }: { id: string; published: boolean }) {

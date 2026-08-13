@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import ShiyuTimeline, { type ShiyuItem } from "./ShiyuTimeline";
 
 /**
@@ -15,6 +16,7 @@ export default function ShiyuStream({
   total: number;
   pageSize: number;
 }) {
+  const t = useTranslations("shiyu");
   const [items, setItems] = useState<ShiyuItem[]>(initialItems);
   const [page, setPage] = useState(2); // 下一页
   const [loading, setLoading] = useState(false);
@@ -28,11 +30,11 @@ export default function ShiyuStream({
     try {
       const res = await fetch(`/api/shiyu?page=${page}&pageSize=${pageSize}`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "加载失败，请稍后再试");
+      if (!res.ok) throw new Error(data.error ?? t("loadError"));
       setItems((prev) => [...prev, ...data.items]);
       setPage((p) => p + 1);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "加载失败，请稍后再试");
+      setError(err instanceof Error ? err.message : t("loadError"));
     } finally {
       setLoading(false);
     }
@@ -56,7 +58,7 @@ export default function ShiyuStream({
           disabled={loading}
           className="mt-10 w-full border border-line py-3.5 font-mono text-xs tracking-[.2em] text-inksoft transition-colors hover:border-ink hover:text-ink disabled:opacity-60"
         >
-          {loading ? "加载中…" : `加载更多拾语（还剩 ${remaining} 条）`}
+          {loading ? t("loading") : t("loadMore", { remaining })}
         </button>
       )}
     </>

@@ -1,0 +1,196 @@
+{
+  "common": {
+    "siteName": "大道至简",
+    "siteTagline": "Time is a river painted on scrolls",
+    "meta": {
+      "titleDefault": "Puxiaoshuai · A River Painted on Scrolls",
+      "titleTemplate": "%s · Puxiaoshuai",
+      "description": "An independent blog about AI, tech, design and collected words. Time is a river painted on scrolls."
+    },
+    "nav": {
+      "home": "Home",
+      "posts": "Posts",
+      "projects": "Projects",
+      "tags": "Tags",
+      "shiyu": "Shiyu",
+      "about": "About"
+    },
+    "search": "Search",
+    "menu": "Menu",
+    "topbar": "✦ Puxiaoshuai · Time is a river painted on scrolls · Walk to the water’s end, sit and watch the clouds rise",
+    "footer": {
+      "desc": "Time is a river painted on scrolls. An independent blog recording AI, tech, design and the words worth keeping.",
+      "writeToMe": "Write to me",
+      "copyright": "© 2026 大道至简 · 蜀ICP备2023037065号",
+      "builtWith": "DESIGNED LIKE A PRINTED JOURNAL — POWERED BY NEXT.JS · TAILWIND · MDX"
+    },
+    "theme": {
+      "title": "Toggle day / night",
+      "ariaLabel": "Toggle light / dark"
+    },
+    "lang": {
+      "switchTo": "Switch language",
+      "label": "中"
+    },
+    "units": {
+      "viewsCount": "{views} views",
+      "minRead": "{minutes} min read",
+      "postsCount": "{count} posts"
+    },
+    "read": "Read"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "INDEPENDENT WRITING",
+      "title1": "Turn days into words,",
+      "title2": "and words into time.",
+      "subtitle": "This is Puxiaoshuai’s online study — noting AI, full-stack and the words in life worth keeping.",
+      "ctaRecent": "Recent Posts",
+      "ctaShiyu": "Shiyu",
+      "keywords": ["AI Tools", "Frontend", "TypeScript", "Database", "Diary", "Visual Stories", "Shiyu"]
+    },
+    "stats": {
+      "posts": "Posts",
+      "views": "Views",
+      "tags": "Tags",
+      "shiyu": "Shiyu"
+    },
+    "recent": {
+      "title": "Recent Writing",
+      "all": "All Posts",
+      "empty": "No posts published yet.",
+      "readMore": "Read more"
+    },
+    "projects": {
+      "eyebrow": "PROJECTS",
+      "handmade": "HANDMADE",
+      "all": "All projects",
+      "title": "My Projects",
+      "desc": "Things I built by hand — some in service, some still being polished. Every project ships with a demo and its source code.",
+      "demo": "Live demo",
+      "demoPending": "Live demo (link pending)",
+      "source": "View source",
+      "sourcePending": "Source (link pending)"
+    },
+    "colophon": {
+      "eyebrow": "COLOPHON",
+      "title": "Updated irregularly; writing is like meeting in person.",
+      "desc": "Feel free to write in and chat about the little things worth recording in AI, tech and life.",
+      "write": "Write to me"
+    }
+  },
+  "posts": {
+    "title": "Posts",
+    "eyebrow": "ARTICLES",
+    "subtitle": "{total} posts · tech, AI tools & daily life",
+    "empty": "No posts published yet."
+  },
+  "post": {
+    "home": "Home",
+    "posts": "Posts",
+    "authorFallback": "The author",
+    "updatedOn": "Updated {date}",
+    "blogger": "Blogger",
+    "authorDesc": "Independent developer / Blogger and the maintainer of the original blog “大道至简”. Migrating years of posts and shiyu from WordPress to Next.js.",
+    "aboutLink": "About",
+    "allPosts": "All posts",
+    "archiveLink": "Old site archive",
+    "prev": "← Previous",
+    "prevNone": "No more — this is the latest post",
+    "next": "Next →",
+    "nextNone": "No more — this is the oldest post",
+    "tagsLabel": "Tags",
+    "commentsTitle": "Reader comments",
+    "commentsMeta": "COMMENTS · {count}",
+    "anonymous": "Anonymous",
+    "anonInitial": "A",
+    "writeComment": "Leave a comment",
+    "tocTitle": "On this page · TOC"
+  },
+  "tags": {
+    "title": "Tag Index",
+    "eyebrow": "TAG INDEX",
+    "sub": "TAG INDEX · {count} tags",
+    "h1": "Find posts by topic.",
+    "desc": "The left column indexes sections and tags; the right lists every post under the selected topic. From AI tools to TypeScript, from diary to shiyu — the one you are looking for is here.",
+    "empty": "No tags yet.",
+    "postsCount": "{count} posts",
+    "byMonth": "{count} posts · by month",
+    "archive": "Archive",
+    "archiveSub": "ARCHIVE · BY MONTH",
+    "monthLabel": "{month} {year}",
+    "emptyTag": "No posts under this tag yet.",
+    "sidebar": {
+      "title": "All topics",
+      "sub": "Sections · Tags dual index",
+      "byDate": "Archive by date"
+    }
+  },
+  "shiyu": {
+    "eyebrow": "COLLECTED WORDS",
+    "typeLabel": "POST_TYPE · WEIYU",
+    "title": "Shiyu",
+    "intro": "A single sentence, or a sentence with a picture. Light picked up along the way, strung on the thread of time — only looking back can you see the flow.",
+    "metaCount": "Total · {count}",
+    "metaSince": "Since · {date}",
+    "metaUpdated": "Updated · {date}",
+    "streamTitle": "Shiyu Stream",
+    "streamSub": "MOMENTS · Latest {count}",
+    "writeEyebrow": "WRITE TO ME",
+    "writeTitle": "What is collected is not just sentences, but the light of that moment.",
+    "writeDesc": "Saved one by one, like collecting stamps. You are welcome to write in — leave the words you want to say, and I will pick them up.",
+    "writeCta": "Write to me",
+    "pinned": "Pinned",
+    "photo": "Photo · {date}",
+    "loadMore": "Load more shiyu ({remaining} left)",
+    "loading": "Loading…",
+    "loadError": "Failed to load, please try again later"
+  },
+  "search": {
+    "title": "Search",
+    "backHome": "Back to home",
+    "placeholder": "Search post titles, excerpts or content…",
+    "button": "Search",
+    "empty": "Type a keyword to start searching",
+    "noResult": "No posts found matching “{q}”",
+    "resultCount": "{count} posts matching “{q}”"
+  },
+  "about": {
+    "eyebrow": "ABOUT",
+    "title": "A TypeScript full-stack developer",
+    "intro": "Full-stack by day, AI tools and automation by night. I believe in doing things simply: precise, restrained, with room to linger.",
+    "bioTitle": "Bio",
+    "skillsTitle": "Skills",
+    "contactTitle": "Contact",
+    "qqMail": "QQ Mail",
+    "wechat": "WeChat"
+  },
+  "blog": {
+    "commentForm": {
+      "tooLong": "Comment content is limited to 100 characters",
+      "submitFailed": "Submission failed",
+      "submitted": "Comment submitted; it will appear once approved.",
+      "networkError": "Network error, please try again later",
+      "nickname": "Nickname *",
+      "email": "Email (optional, never public)",
+      "contentPlaceholder": "Write your message… *",
+      "moderation": "Comments are shown after moderation · be kind",
+      "submitting": "Submitting…",
+      "submit": "Submit comment"
+    },
+    "interactions": {
+      "like": "{count} likes",
+      "views": "{count} views",
+      "likedTitle": "Liked",
+      "likeTitle": "Like"
+    },
+    "postCover": {
+      "defaultTag": "Post"
+    },
+    "pagination": {
+      "prev": "← Previous",
+      "next": "Next →",
+      "aria": "Pagination"
+    }
+  }
+}

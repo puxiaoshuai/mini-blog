@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 /** 通用删除按钮：confirm → DELETE 对应 action → router.refresh() */
 export default function DeleteButton({

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 /** 文章阅赞交互：浏览按会话去重 +1，点赞前端防连点 */
 export default function PostInteractions({
@@ -12,6 +13,7 @@ export default function PostInteractions({
   initialLikes: number;
   initialViews: number;
 }) {
+  const t = useTranslations("blog.interactions");
   const [likes, setLikes] = useState(initialLikes);
   const [views, setViews] = useState(initialViews);
   const [liked, setLiked] = useState(false);
@@ -51,7 +53,7 @@ export default function PostInteractions({
       <button
         onClick={like}
         disabled={liked || busy}
-        title={liked ? "已赞" : "点赞"}
+        title={liked ? t("likedTitle") : t("likeTitle")}
         className={`flex items-center gap-1.5 transition-colors ${
           liked ? "text-accent" : "hover:text-accent"
         } disabled:opacity-70`}
@@ -59,14 +61,14 @@ export default function PostInteractions({
         <svg width="14" height="14" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden>
           <path d="M19 14c1.5-1.5 2-3.6 2-5.5A4.5 4.5 0 0 0 16.5 4c-1.6 0-3 .8-4.5 2-1.5-1.2-2.9-2-4.5-2A4.5 4.5 0 0 0 3 8.5c0 1.9.5 4 2 5.5l7 7Z" />
         </svg>
-        <span>{likes}</span> 赞
+        <span>{t("like", { count: likes })}</span>
       </button>
       <span className="flex items-center gap-1.5">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
           <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z" />
           <circle cx="12" cy="12" r="3" />
         </svg>
-        {views} 次浏览
+        {t("views", { count: views })}
       </span>
     </div>
   );

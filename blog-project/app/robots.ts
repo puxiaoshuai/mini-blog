@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard", "/api/auth", "/api/"],
+        disallow: ["/dashboard", "/api/", "/zh/dashboard", "/en/dashboard"],
       },
     ],
     sitemap: "https://www.puxiaoshuai.top/sitemap.xml",

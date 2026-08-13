@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 /** 日/夜切换按钮：切换 html.dark 并写入 localStorage（跟随系统由主题脚本兜底） */
 export default function ThemeToggle() {
+  const t = useTranslations("common");
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
@@ -24,8 +26,8 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      title="切换日间/夜间"
-      aria-label="切换深浅色"
+      title={t("theme.title")}
+      aria-label={t("theme.ariaLabel")}
       className="flex h-9 w-9 items-center justify-center border border-line transition-colors hover:border-ink hover:bg-card"
     >
       {dark ? (
