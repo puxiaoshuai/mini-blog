@@ -278,7 +278,6 @@ export default async function Home() {
           <p className="mx-auto mt-6 font-serif text-3xl font-black leading-[1.7] md:text-4xl">
             不定期更新，见字如面。
             <br />
-            得闲时，随手一读。
           </p>
           <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-nighttext/70">
             欢迎来信，聊聊 AI、技术与生活里那些值得记录的小事。
