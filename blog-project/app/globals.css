@@ -283,4 +283,25 @@ body::before {
       transform: scale(1.06);
     }
   }
+
+  /* 关键词跑马灯 */
+  .marquee-track {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    animation: marquee 32s linear infinite;
+  }
+  .marquee-track > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .marquee-track > span + span {
+    margin-left: 3rem;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }

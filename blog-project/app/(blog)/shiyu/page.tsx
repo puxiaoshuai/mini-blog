@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getShiyus, getShiyuMeta } from "@/lib/shiyu";
 import { formatDate } from "@/lib/utils";
 import ShiyuStream from "@/components/shiyu/ShiyuStream";
@@ -67,38 +66,39 @@ export default async function ShiyuPage() {
         />
       </section>
 
-      {/* ═══ 发布带 ═══ */}
-      <section className="mt-20 bg-night text-nighttext">
-        <div className="grid items-center gap-10 px-8 py-16 md:grid-cols-12 md:py-20">
-          <div className="md:col-span-8">
-            <p className="eyebrow mb-4 text-[10px] text-gold">拾语 · 发布</p>
-            <h2 className="font-serif text-3xl font-black leading-tight">
-              捡起的，不只是句子，
-              <br />
-              更是当时的光。
-            </h2>
-            <p className="mt-4 text-sm leading-relaxed text-nighttext/70">
-              后台一条一条地攒，像集邮。也欢迎来信——把你想说的话，留给我捡起来。
-            </p>
+      {/* ═══ 发布带 · 集邮簿 ═══ */}
+      <section className="relative mt-20 overflow-hidden bg-night text-nighttext">
+        <div className="px-8 py-16 text-center md:py-24">
+          <p className="eyebrow text-[10px] text-gold">
+            拾语 · 发布 · WRITE TO ME
+          </p>
+
+          <div className="mt-10 flex items-center justify-center gap-5">
+            <div className="h-px w-16 bg-nighttext/30 md:w-28" />
+            <span className="seal flex h-11 w-11 items-center justify-center bg-accent font-serif font-black text-nighttext">
+              语
+            </span>
+            <div className="h-px w-16 bg-nighttext/30 md:w-28" />
           </div>
-          <div className="md:col-span-4 md:text-right">
-            <Link
-              href="/dashboard"
-              className="inline-flex h-12 items-center gap-2 bg-accent px-8 font-mono text-xs tracking-[.2em] text-nighttext transition-colors hover:bg-accentdeep"
+
+          <h2 className="mx-auto mt-10 max-w-2xl font-serif text-3xl font-black leading-[1.6] md:text-4xl">
+            捡起的，不只是句子，更是当时的光。
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-nighttext/70">
+            一条一条地攒，像集邮。也欢迎来信——把你想说的话，留给我捡起来。
+          </p>
+
+          <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <span className="font-mono text-[11px] tracking-[.25em] text-nighttext/60">
+              来信 →
+            </span>
+            <a
+              href="mailto:1372553910@qq.com"
+              className="border border-nighttext/60 px-8 py-3.5 font-mono text-xs tracking-[.2em] transition-colors duration-300 hover:bg-nighttext hover:text-night"
             >
-              去后台写一条
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden
-              >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </Link>
+              1372553910@qq.com
+            </a>
           </div>
         </div>
       </section>

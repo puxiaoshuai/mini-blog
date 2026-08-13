@@ -5,8 +5,9 @@ import { formatDate } from "@/lib/utils";
 import { PROJECTS } from "@/lib/projects";
 import PostCard, { PostCover } from "@/components/posts/PostCard";
 
-/** 首页：刊头 / 卷首诗 / 数据台账 / 最近文章 / 项目 / 订阅带 */
+/** 首页：Hero 左右分栏 / 最近文章 / 项目 / 订阅带 */
 const STATS_LABELS = ["篇文章", "次浏览", "个标签", "条拾语"];
+const HERO_KEYWORDS = ["AI 工具", "前端", "TypeScript", "数据库", "日记", "图文故事", "拾语"];
 
 export default async function Home() {
   const [stats, posts] = await Promise.all([getStats(), getRecentPublishedPosts(5)]);
@@ -15,76 +16,126 @@ export default async function Home() {
 
   return (
     <div>
-      {/* ═══ 刊头 Masthead ═══ */}
-      <section className="mx-auto max-w-6xl px-5 pt-10 md:pt-14">
-        <div className="flex items-end justify-between gap-6 border-y-2 border-ink py-5 md:py-7">
-          <div>
-            <p className="eyebrow mb-2 text-[10px] text-inksoft">
-              大 道 至 简 · PUXIAOSHUAI
+      {/* ═══ Hero · 左右分栏（左文右图） ═══ */}
+      <section className="mx-auto max-w-6xl px-5 pt-12 md:pt-16">
+        <div className="relative grid items-center gap-14 pb-16 md:grid-cols-[1.05fr_0.95fr] md:gap-16 md:pb-24">
+          {/* ── 左栏：身份 + 宣言 + 引导 + 数据 ── */}
+          <div className="text-center md:text-left">
+            {/* 徽章 */}
+            <p className="eyebrow reveal inline-flex items-center gap-2 border border-accent/40 bg-accent/5 px-3 py-1.5 text-[10px] text-accent">
+              <span className="h-1.5 w-1.5 bg-accent" aria-hidden />
+              独 立 写 作 · INDEPENDENT WRITING
             </p>
-            <h1 className="ink-wipe font-serif text-5xl font-black leading-none md:text-7xl">
-              大道至简
-            </h1>
-          </div>
-          <div className="text-right font-mono text-[10px] leading-loose text-inksoft md:text-[11px]">
-            <p>时光是画在卷上的河流</p>
-            <p>SINCE 2023 · 成都</p>
-          </div>
-        </div>
 
-        {/* ═══ 卷首诗 Hero ═══ */}
-        <div className="relative overflow-hidden pb-20 pt-16 text-center md:pb-28 md:pt-24">
-          <p className="eyebrow reveal text-[11px] text-accent">卷首诗 · ODE</p>
-          <p
-            className="reveal mt-5 mb-9 font-mono text-[11px] tracking-[.3em] text-inksoft"
-            style={{ animationDelay: ".08s" }}
-          >
-            唐 · 王维《终南别业》
-          </p>
-          <h2
-            className="reveal font-serif text-4xl font-black leading-[1.6] md:text-6xl md:leading-[1.6]"
+            <h1 className="ink-wipe mt-6 font-serif text-4xl font-black leading-[1.5] tracking-[.05em] md:text-6xl md:leading-[1.4]">
+              把日子过成文字，
+              <br className="hidden md:block" />
+              把文字酿成时光。
+            </h1>
+
+            <p
+              className="reveal mx-auto mt-5 max-w-md text-sm leading-relaxed text-inksoft md:mx-0"
+              style={{ animationDelay: ".16s" }}
+            >
+              这里是蒲小帅的线上书房，记下 AI、全栈与生活里那些值得留下的字。
+            </p>
+
+            {/* 双按钮 */}
+            <div
+              className="reveal mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center md:justify-start"
+              style={{ animationDelay: ".24s" }}
+            >
+              <Link
+                href="/posts"
+                className="group flex h-12 w-full items-center justify-center gap-2 bg-accent px-8 font-mono text-xs tracking-[.2em] text-nighttext transition-colors hover:bg-accentdeep sm:w-auto"
+              >
+                最近文章
+                <svg
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+              <Link
+                href="/shiyu"
+                className="flex h-12 w-full items-center justify-center border border-ink px-8 font-mono text-xs tracking-[.2em] transition-colors hover:bg-ink hover:text-paper sm:w-auto"
+              >
+                拾语
+              </Link>
+            </div>
+
+            {/* 数据行 */}
+            <div
+              className="reveal mt-12 grid grid-cols-4 border-y border-line"
+              style={{ animationDelay: ".32s" }}
+            >
+              {statsValues.map((value, i) => (
+                <div
+                  key={STATS_LABELS[i]}
+                  className={`py-5 ${
+                    i < statsValues.length - 1 ? "border-r border-linesoft" : ""
+                  }`}
+                >
+                  <p className="font-serif text-2xl font-black md:text-3xl">
+                    {value}
+                  </p>
+                  <p className="mt-1 font-mono text-[9px] tracking-[.2em] text-inksoft">
+                    {STATS_LABELS[i]}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── 右栏：一张好看的图 ── */}
+          <div
+            className="reveal relative mx-auto w-full max-w-md"
             style={{ animationDelay: ".16s" }}
           >
-            行到水穷处，<br className="md:hidden" />
-            坐看云起时。
-          </h2>
-          <div
-            className="reveal mt-11 flex items-center justify-center gap-5"
-            style={{ animationDelay: ".24s" }}
-          >
-            <div className="h-px w-16 bg-line md:w-28" />
-            <span className="seal flex h-10 w-10 items-center justify-center bg-accent font-serif font-black text-nighttext">
-              简
-            </span>
-            <div className="h-px w-16 bg-line md:w-28" />
-          </div>
-          <p
-            className="reveal mt-8 font-serif text-lg text-inksoft"
-            style={{ animationDelay: ".32s" }}
-          >
-            低谷之处，恰是云起的起点。
-          </p>
-        </div>
-      </section>
-
-      {/* ═══ 数据台账 ═══ */}
-      <section className="mx-auto max-w-6xl px-5">
-        <div className="grid grid-cols-2 border-y-2 border-ink bg-card/60 md:grid-cols-4">
-          {statsValues.map((value, i) => (
-            <div
-              key={STATS_LABELS[i]}
-              className={`py-7 px-4 text-center ${
-                i < statsValues.length - 1 ? "border-r border-linesoft" : ""
-              }`}
-            >
-              <p className="font-serif text-3xl font-black md:text-4xl">
-                {value}
-              </p>
-              <p className="mt-1 font-mono text-[10px] tracking-[.3em] text-inksoft">
-                {STATS_LABELS[i]}
-              </p>
+            <div className="card-raise frame group relative aspect-[4/5] overflow-hidden border border-line bg-card">
+              <Image
+                src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1200&auto=format&fit=crop"
+                alt="书房一角 · 时光是画在卷上的河流"
+                fill
+                sizes="(max-width: 768px) 100vw, 42vw"
+                priority
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent" />
+              <span className="chip absolute bottom-3 left-3 bg-paper/90 text-ink">
+                书房 · STUDY
+              </span>
+              <span className="seal absolute top-4 right-4 flex h-9 w-9 items-center justify-center bg-accent font-serif text-base font-black text-nighttext">
+                帅
+              </span>
             </div>
-          ))}
+            <p className="mt-6 text-center font-mono text-[10px] tracking-[.25em] text-inksoft md:text-left">
+              时光是画在卷上的河流 · SINCE 2023 成都
+            </p>
+          </div>
+        </div>
+
+        {/* 关键词跑马灯 */}
+        <div
+          className="reveal overflow-hidden border-y border-line py-3"
+          style={{ animationDelay: ".4s" }}
+          aria-hidden
+        >
+          <div className="marquee-track font-mono text-[11px] tracking-[.25em] text-inksoft">
+            {[...HERO_KEYWORDS, ...HERO_KEYWORDS].map((word, i) => (
+              <span key={i}>
+                {word}
+                <span className="text-accent">◆</span>
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -64,12 +64,6 @@ export default function Header() {
               <path d="m21 21-4.3-4.3" />
             </svg>
           </Link>
-          <Link
-            href="/dashboard"
-            className="hidden h-9 items-center gap-2 border border-ink px-4 font-mono text-xs tracking-[.15em] transition-colors hover:bg-ink hover:text-paper sm:inline-flex"
-          >
-            管理
-          </Link>
           <button
             onClick={() => setOpen(!open)}
             className="flex h-9 w-9 items-center justify-center border border-line md:hidden"
@@ -105,9 +99,6 @@ export default function Header() {
           ))}
           <Link href="/search" onClick={() => setOpen(false)}>
             搜索
-          </Link>
-          <Link href="/dashboard" onClick={() => setOpen(false)}>
-            管理后台
           </Link>
         </nav>
       )}
