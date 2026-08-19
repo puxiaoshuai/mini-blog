@@ -4,6 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import LocatorSetup from "@/components/common/LocatorSetup";
 import { routing } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/site";
 // 字体走 npm（@fontsource），随安装下载，国内网络无需访问 Google Fonts
 import "@fontsource/noto-serif-sc/500.css";
 import "@fontsource/noto-serif-sc/700.css";
@@ -15,8 +16,6 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource/ibm-plex-mono/600.css";
 import "../globals.css";
-
-const SITE_URL = "https://www.puxiaoshuai.top";
 
 /** 全站唯一根布局（app/[locale]）：渲染 <html lang>，供 /zh /en 两个语言各自静态生成 */
 export function generateStaticParams() {

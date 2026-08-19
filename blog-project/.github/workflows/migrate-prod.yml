@@ -1,0 +1,70 @@
+# ============================================================
+# 数据库迁移（生产）：push 到 main 且 prisma 相关文件有变更时，
+# 自动对生产 PostgreSQL 执行 `prisma migrate deploy`。
+#
+# 前置条件（一次性配置）：
+#   仓库 Settings → Secrets and variables → Actions 新增 Secret：
+#     DIRECT_URL = 数据库「直连」地址（Vercel Postgres/Neon 控制台里
+#     不带 -pooler 的那条，如 postgresql://user:pass@ep-xxx.aws.neon.tech/...）
+#   ⚠️ 一定用直连地址，不要用连接池地址（池化连接执行 DDL 可能超时/报错）。
+#
+# 说明：
+#   - 只在 main 分支跑，预览分支（Preview）不会误动生产库。
+#   - paths 过滤：只有 schema/迁移/依赖变更才触发；也可手动 workflow_dispatch。
+#   - seed 不会自动执行（seed 会清空重建拾语/评论，生产只做一次性手动灌入）。
+#
+# ⚠️ 与 Vercel 构建的顺序问题：push 会同时触发本工作流和 Vercel 构建，
+# 若 Vercel 构建先于迁移完成且本次 schema 有破坏性变更，构建可能失败。
+# 处理：失败后在 Vercel 面板重新 Deploy 一次即可（此时迁移已就位）。
+# 若想彻底消除竞争，可在下方「部署到 Vercel」步骤里用 Vercel CLI 串行部署
+# （需要在仓库 Settings 里把项目从 Vercel 自动集成改为令牌部署）。
+# ============================================================
+
+name: 数据库迁移（生产）
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "prisma/**"
+      - "prisma.config.ts"
+      - "package.json"
+      - "package-lock.json"
+  workflow_dispatch:
+
+concurrency:
+  group: migrate-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: prisma migrate deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 应用数据库迁移（生产库）
+        env:
+          # prisma.config.ts 读取 DATABASE_URL；这里注入直连串
+          DATABASE_URL: ${{ secrets.DIRECT_URL }}
+        run: npx prisma migrate deploy
+
+      # --- 可选：迁移成功后由工作流串行触发 Vercel 生产部署（消除构建竞争）---
+      # 需要：① 仓库 Secrets 增加 VERCEL_TOKEN（Vercel → Account Settings → Tokens）
+      #       ② 在 Vercel 项目里取消 GitHub 自动部署（Settings → Git → 关闭），
+      #          避免同一 push 触发两次部署
+      # - name: 部署到 Vercel（迁移之后再构建）
+      #   env:
+      #     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      #   run: npx vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}

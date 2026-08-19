@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getPublishedPostRefs } from "@/lib/posts";
+import { SITE_URL } from "@/lib/site";
 
-const BASE = "https://www.puxiaoshuai.top";
+const BASE = SITE_URL;
 const LOCALES = ["zh", "en"] as const;
 const STATIC_PATHS = ["", "/posts", "/tags", "/shiyu", "/about", "/search"];
 

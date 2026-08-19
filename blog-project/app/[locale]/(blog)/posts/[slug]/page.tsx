@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getPostBySlug, getPublishedPostRefs, getAdjacentPosts, getPublishedComments } from "@/lib/posts";
 import { renderMDX, getToc } from "@/lib/mdx";
 import { formatDate } from "@/lib/utils";
+import { SITE_URL } from "@/lib/site";
 import { Link } from "@/i18n/navigation";
 import Toc from "@/components/posts/Toc";
 import CommentForm from "@/components/posts/CommentForm";
@@ -191,7 +192,7 @@ export default async function PostPage({ params }: { params: Params }) {
                 <Link href="/posts" className="u-link">
                   {t("allPosts")}
                 </Link>
-                <a href="https://www.puxiaoshuai.top/" className="u-link">
+                <a href={`${SITE_URL}/`} className="u-link">
                   {t("archiveLink")}
                 </a>
               </div>
