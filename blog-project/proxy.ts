@@ -19,6 +19,8 @@ const authMiddleware = withAuth(
     return intlMiddleware(req);
   },
   {
+    // next-auth v4 中间件不自动读 NEXTAUTH_SECRET 的已知坑：显式传入更稳
+    secret: process.env.NEXTAUTH_SECRET,
     pages: { signIn: "/login" },
     callbacks: {
       authorized: ({ token, req }) => {

@@ -41,6 +41,9 @@ jobs:
     name: prisma migrate deploy
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      # job 级注入直连串：postinstall(prisma generate) 和 migrate 都要读 DATABASE_URL
+      DATABASE_URL: ${{ secrets.DIRECT_URL }}
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
@@ -55,9 +58,6 @@ jobs:
         run: npm ci
 
       - name: 应用数据库迁移（生产库）
-        env:
-          # prisma.config.ts 读取 DATABASE_URL；这里注入直连串
-          DATABASE_URL: ${{ secrets.DIRECT_URL }}
         run: npx prisma migrate deploy
 
       # --- 可选：迁移成功后由工作流串行触发 Vercel 生产部署（消除构建竞争）---

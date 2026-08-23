@@ -229,8 +229,28 @@ npx prisma db seed          # 灌入：admin/admin123、读者、2篇文章、10
 └──────────────────────────────────────────────────┘
 ```
 
-- 域名生效后，把 `NEXTAUTH_URL` 和 `NEXT_PUBLIC_SITE_URL` 改成你的正式域名并 **Redeploy**。
-- 不想买域名？Vercel 会送你 `xxx.vercel.app`，先用它验证功能，`NEXTAUTH_URL` 不填预览也能登录（next-auth 自动从 `VERCEL_URL` 推断）。
+> ⚠️ 先提醒：**`.vercel.app` 免费域名在国内经常被墙/超时**（实测：部署成功、海外或代理能访问，国内直连打不开/一直转圈）。正式面向国内用户**必须绑自定义域名**。
+
+### 阿里云（云解析 DNS）加记录示例（以绑定 `blog.puxiaoshuai.top` 为例）
+
+1. 阿里云控制台 → **云解析 DNS** → 点 `puxiaoshuai.top` → **解析设置** → **添加记录**
+2. 填写：
+
+| 字段 | 值 |
+|---|---|
+| 记录类型 | **CNAME**（不要用 A） |
+| 主机记录 | `blog` |
+| 记录值 | **`cname.vercel-dns.com`** |
+| TTL | 默认 |
+
+> ⚠️ 实测踩坑：**子域名必须用 CNAME 指向 `cname.vercel-dns.com`**。如果错用 A 记录指向旧服务器 IP（例如 `111.229.99.183`），`blog.xxx.top` 会打开旧站，永远到不了 Vercel。
+> 保存后可用 `nslookup blog.puxiaoshuai.top 223.5.5.5`（阿里云公共 DNS）验证，应看到 `Aliases: blog.puxiaoshuai.top → cname.vercel-dns.com`。
+
+### 生效后
+
+- **Vercel → Settings → Domains** 添加你的域名，等状态变绿 **Valid Configuration**。
+- 改环境变量 `NEXTAUTH_URL` 和 `NEXT_PUBLIC_SITE_URL` 为正式域名并 **Redeploy**（build-time 注入，必须重新部署才生效）。
+- 不想买域名？`xxx.vercel.app` 可先验证功能，`NEXTAUTH_URL` 不填预览也能登录（next-auth 自动从 `VERCEL_URL` 推断），但**国内访问不稳定**。
 
 ---
 
@@ -263,6 +283,10 @@ npx prisma db seed          # 灌入：admin/admin123、读者、2篇文章、10
 | 构建失败「表不存在」 | 迁移还没跑 | 先执行第五步 migrate deploy，再 Redeploy |
 | 登录后跳转异常 / 回调错误 | `NEXTAUTH_URL` 不对 | 改成完整 https 域名 |
 | 首页/文章打不开但能 build | 构建时数据库不可达 | SSG 在构建期查库，确保构建环境有 `DATABASE_URL` |
+| 访问返回 `404: NOT_FOUND`（平台级，带请求 ID） | 请求没匹配到部署路由 | 依次确认：生产部署是否构建成功、Root Directory 是否正确、访问的是生产域名还是 Preview、Domains 是否 Valid |
+| 所有页面打不开 / 500 | `NEXTAUTH_SECRET` 未配置，next-auth 中间件（`proxy.ts`）崩溃 | Vercel 配置 `NEXTAUTH_SECRET`（`openssl rand -base64 32`）后 Redeploy |
+| 构建失败 `Could not find package.json` | Root Directory 设错 | GitHub 仓库根只有 `blog-project/`，Root Directory 必须填 `blog-project`（不是 `.`） |
+| `.vercel.app` 国内打不开 / 超时 | 免费域名在国内被墙 | 绑定自定义域名，或临时用代理访问 |
 | 限流不生效（所有人同一个 IP） | serverless 多实例 + 内存限流 | 代码注释已说明是"尽力而为"，博客量级够用 |
 | `sitemap.xml` 指向旧域名 | 没配 `NEXT_PUBLIC_SITE_URL` | 配置后 Redeploy |
 
