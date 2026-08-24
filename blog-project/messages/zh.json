@@ -21,7 +21,9 @@
     "footer": {
       "desc": "时光是画在卷上的河流。一个记录 AI、技术、设计日常与随手拾语的独立博客。",
       "writeToMe": "来信",
-      "copyright": "© 2026 大道至简 · 蜀ICP备2023037065号",
+      "copyright": "© 2026 大道至简",
+      "beianGongan": "川公网安备51012202001842号",
+      "beianIcp": "蜀ICP备2023037065号",
       "builtWith": "DESIGNED LIKE A PRINTED JOURNAL — POWERED BY NEXT.JS · TAILWIND · MDX"
     },
     "theme": {
@@ -44,7 +46,7 @@
       "eyebrow": "独 立 写 作 · INDEPENDENT WRITING",
       "title1": "把日子过成文字，",
       "title2": "把文字酿成时光。",
-      "subtitle": "这里是蒲小帅的线上书房，记下 AI、全栈与生活里那些值得留下的字。",
+      "subtitle": "记录AI、全栈与生活里那些值得留下的字。",
       "ctaRecent": "最近文章",
       "ctaShiyu": "拾语",
       "keywords": ["AI 工具", "前端", "TypeScript", "数据库", "日记", "图文故事", "拾语"]

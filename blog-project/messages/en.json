@@ -21,7 +21,9 @@
     "footer": {
       "desc": "Time is a river painted on scrolls. An independent blog recording AI, tech, design and the words worth keeping.",
       "writeToMe": "Write to me",
-      "copyright": "© 2026 大道至简 · 蜀ICP备2023037065号",
+      "copyright": "© 2026 大道至简",
+      "beianGongan": "川公网安备51012202001842号",
+      "beianIcp": "蜀ICP备2023037065号",
       "builtWith": "DESIGNED LIKE A PRINTED JOURNAL — POWERED BY NEXT.JS · TAILWIND · MDX"
     },
     "theme": {

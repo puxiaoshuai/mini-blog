@@ -47,9 +47,36 @@ export default async function Footer() {
           </nav>
         </div>
 
-        {/* ═══ 版权行 ═══ */}
+        {/* ═══ 版权行 + 备案信息 ═══ */}
         <div className="flex flex-col items-center justify-between gap-3 border-t border-linesoft py-5 font-mono text-[10px] tracking-[.2em] text-inksoft md:flex-row">
-          <p>{t("footer.copyright")}</p>
+          <div className="flex flex-col items-center gap-1.5 md:items-start">
+            <p>{t("footer.copyright")}</p>
+            <p className="flex flex-wrap items-center justify-center gap-x-3">
+              <a
+                href="https://beian.mps.gov.cn/#/query/webSearch?code=51012202001842"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center transition-colors hover:text-accent"
+              >
+                <img
+                  src="https://www.puxiaoshuai.top/wp-content/uploads/2024/06/6446d860dbbfe540e9e270.png"
+                  alt=""
+                  width="16"
+                  height="16"
+                  className="mr-1.5 align-[-3px]"
+                />
+                {t("footer.beianGongan")}
+              </a>
+              <a
+                href="https://beian.miit.gov.cn/#/Integrated/index"
+                target="_blank"
+                rel="noreferrer"
+                className="transition-colors hover:text-accent"
+              >
+                {t("footer.beianIcp")}
+              </a>
+            </p>
+          </div>
           <p>{t("footer.builtWith")}</p>
         </div>
       </div>
