@@ -1,5 +1,5 @@
 # ============================================================
-# 数据库迁移（生产）：push 到 main 且 prisma 相关文件有变更时，
+# 数据库迁移（生产）：push 到 master 且 prisma 相关文件有变更时，
 # 自动对生产 PostgreSQL 执行 `prisma migrate deploy`。
 #
 # 前置条件（一次性配置）：
@@ -9,7 +9,7 @@
 #   ⚠️ 一定用直连地址，不要用连接池地址（池化连接执行 DDL 可能超时/报错）。
 #
 # 说明：
-#   - 只在 main 分支跑，预览分支（Preview）不会误动生产库。
+#   - 只在 master 分支跑，预览分支（Preview）不会误动生产库。
 #   - paths 过滤：只有 schema/迁移/依赖变更才触发；也可手动 workflow_dispatch。
 #   - seed 不会自动执行（seed 会清空重建拾语/评论，生产只做一次性手动灌入）。
 #
@@ -24,7 +24,7 @@ name: 数据库迁移（生产）
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - "prisma/**"
       - "prisma.config.ts"
