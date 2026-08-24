@@ -13,6 +13,10 @@ import PostInteractions from "@/components/posts/PostInteractions";
 
 type Params = Promise<{ locale: string; slug: string }>;
 
+// 强制动态渲染：next-intl 的 getTranslations 在静态生成（含 ISR on-demand）路径下会读
+// headers()，触发 DYNAMIC_SERVER_USAGE 500。详情页改走普通 SSR，与首页/列表页一致。
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   const posts = await getPublishedPostRefs();
   return posts.map((p) => ({ slug: p.slug }));

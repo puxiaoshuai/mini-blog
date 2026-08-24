@@ -7,6 +7,10 @@ import TagSidebar from "@/components/tags/TagSidebar";
 
 type Params = Promise<{ locale: string; tag: string }>;
 
+// 强制动态渲染：与 posts/[slug] 同理，避免 ISR on-demand 静态生成路径下 next-intl
+// 读 headers() 触发 DYNAMIC_SERVER_USAGE 500。
+export const dynamic = "force-dynamic";
+
 const MONTHS = [
   "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
   "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
