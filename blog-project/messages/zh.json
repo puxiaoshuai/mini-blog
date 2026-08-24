@@ -41,6 +41,14 @@
     },
     "read": "阅读"
   },
+  "notFound": {
+    "eyebrow": "PAGE NOT FOUND · 找不到这一页",
+    "title": "这一页散佚在时光之外。",
+    "desc": "它可能已被删除、改名，或从未存在。卷轴很长，别在一处空白停留太久。",
+    "backHome": "回首页",
+    "browsePosts": "去读文章",
+    "footerNote": "行到水穷处 · 坐看云起时"
+  },
   "home": {
     "hero": {
       "eyebrow": "独 立 写 作 · INDEPENDENT WRITING",

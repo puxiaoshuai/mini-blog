@@ -6,7 +6,9 @@ import { PROJECTS } from "@/lib/projects";
 import { Link } from "@/i18n/navigation";
 import PostCard, { PostCover } from "@/components/posts/PostCard";
 
-/** 首页：Hero 左右分栏 / 最近文章 / 项目 / 订阅带 */
+/** 首页：Hero 左右分栏 / 最近文章 / 项目 / 订阅带。ISR：最多 5 分钟自愈（写操作另有 on-demand 刷新） */
+export const revalidate = 300;
+
 const STATS_LABEL_KEYS = ["stats.posts", "stats.views", "stats.tags", "stats.shiyu"] as const;
 
 export default async function Home({

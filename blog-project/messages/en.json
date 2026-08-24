@@ -41,6 +41,14 @@
     },
     "read": "Read"
   },
+  "notFound": {
+    "eyebrow": "PAGE NOT FOUND",
+    "title": "This page has slipped out of time.",
+    "desc": "It may have been deleted, renamed, or never existed. The scroll is long — don't linger on one blank.",
+    "backHome": "Back home",
+    "browsePosts": "Browse posts",
+    "footerNote": "WALK TO THE WATER'S END · SIT AND WATCH THE CLOUDS RISE"
+  },
   "home": {
     "hero": {
       "eyebrow": "INDEPENDENT WRITING",
