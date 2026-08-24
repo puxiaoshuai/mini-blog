@@ -86,7 +86,7 @@ export default async function Home({
 
             {/* 数据行 */}
             <div
-              className="reveal mt-12 grid grid-cols-4 border-y border-line"
+              className="reveal mt-12 grid grid-cols-4 border-y border-line text-center"
               style={{ animationDelay: ".32s" }}
             >
               {statsValues.map((value, i) => (
