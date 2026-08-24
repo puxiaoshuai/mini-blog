@@ -15,7 +15,16 @@ export type PostFormData = {
   coverImage: string;
   published: boolean;
   tags: string[]; // 标签名
+  createdAt?: string; // 创建时间（ISO，可编辑）；留空后端默认当前时间
 };
+
+/** 把 Date 格式化成 datetime-local 输入框需要的本地时间值：YYYY-MM-DDTHH:mm */
+function toLocalInputValue(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(
+    date.getHours()
+  )}:${pad(date.getMinutes())}`;
+}
 
 /** 文章新建 / 编辑表单（客户端，调 /api/posts） */
 export default function PostForm({ post }: { post?: PostFormData }) {
@@ -29,6 +38,15 @@ export default function PostForm({ post }: { post?: PostFormData }) {
   const [coverImage, setCoverImage] = useState(post?.coverImage ?? "");
   const [published, setPublished] = useState(post?.published ?? true);
   const [tags, setTags] = useState(post?.tags.join(", ") ?? "");
+  // 创建时间：编辑时用原时间，新建时默认当前时间（均转为本地时区显示）
+  const [createdAt, setCreatedAt] = useState(() => {
+    const base = post?.createdAt ? new Date(post.createdAt) : new Date();
+    return Number.isNaN(base.getTime())
+      ? toLocalInputValue(new Date())
+      : toLocalInputValue(base);
+  });
+  // datetime-local 的 max：今天此时，禁用选择未来时间
+  const [maxCreatedAt] = useState(() => toLocalInputValue(new Date()));
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [mode, setMode] = useState<"edit" | "preview">("edit");
@@ -38,7 +56,11 @@ export default function PostForm({ post }: { post?: PostFormData }) {
     setBusy(true);
     setError(null);
     const tagNames = tags.split(",").map((t) => t.trim()).filter(Boolean);
-    const payload = { title, slug, excerpt, content, coverImage, published, tags: tagNames };
+    const payload = {
+      title, slug, excerpt, content, coverImage, published, tags: tagNames,
+      // 留空不传：新建默认当前时间，编辑保持原时间
+      ...(createdAt ? { createdAt: new Date(createdAt).toISOString() } : {}),
+    };
     const url = isEdit ? `/api/posts/${post!.id}` : "/api/posts";
 
     try {
@@ -85,6 +107,21 @@ export default function PostForm({ post }: { post?: PostFormData }) {
           <label htmlFor="tags" className={labelCls}>标签 / TAGS（逗号分隔）</label>
           <input id="tags" value={tags} onChange={(e) => setTags(e.target.value)} className={inputCls} placeholder="Next.js, TypeScript" />
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="createdAt" className={labelCls}>创建时间 / CREATED AT</label>
+        <input
+          id="createdAt"
+          type="datetime-local"
+          value={createdAt}
+          max={maxCreatedAt}
+          onChange={(e) => setCreatedAt(e.target.value)}
+          className={inputCls}
+        />
+        <p className="mt-1 font-mono text-[10px] text-inksoft">
+          留空保存时默认当前时间；今天之后的时间不可选择，可回填历史时间以调整文章展示顺序
+        </p>
       </div>
 
       <div>

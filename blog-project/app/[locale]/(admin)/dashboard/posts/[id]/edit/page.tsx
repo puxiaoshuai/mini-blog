@@ -20,6 +20,7 @@ export default async function EditPostPage({ params }: { params: Params }) {
     coverImage: post.coverImage ?? "",
     published: post.published,
     tags: post.tags.map((t) => t.name),
+    createdAt: post.createdAt.toISOString(),
   };
 
   return (

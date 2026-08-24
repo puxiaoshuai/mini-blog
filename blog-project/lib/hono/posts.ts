@@ -21,7 +21,26 @@ type PostBody = {
   coverImage?: string | null;
   published?: boolean;
   tags?: string[];
+  createdAt?: string | null;
 };
+
+/** 判断日期是否严格晚于今天（按服务器本地日期），不允许把文章时间改到未来 */
+function isFutureDay(date: Date): boolean {
+  const now = new Date();
+  const day = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  return day(date) > day(now);
+}
+
+/** 解析客户端传来的创建时间：空 → undefined（走默认）；非法 / 未来 → 返回错误 */
+function parseCreatedAt(
+  value: string | null | undefined
+): { date?: Date; error?: string } {
+  if (!value) return {};
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return { error: "创建时间格式不正确" };
+  if (isFutureDay(date)) return { error: "创建时间不能晚于今天" };
+  return { date };
+}
 
 /** 文章路由（挂载于 /posts，app.basePath('/api') 后即 /api/posts） */
 export const posts = new Hono()
@@ -53,6 +72,8 @@ export const posts = new Hono()
     const slugger = new GithubSlugger();
     const slug = body.slug?.trim() || slugger.slug(title);
     const tagIds = await upsertTags(body.tags ?? []);
+    const { date: createdAt, error: createdAtError } = parseCreatedAt(body.createdAt);
+    if (createdAtError) return c.json({ error: createdAtError }, 400);
 
     try {
       const content = body.content ?? "";
@@ -66,6 +87,7 @@ export const posts = new Hono()
           coverImage: body.coverImage?.trim() || randomCover(),
           published: body.published ?? true,
           authorId: session.userId,
+          ...(createdAt ? { createdAt } : {}),
           tags: { connect: tagIds.map((id) => ({ id })) },
         },
       });
@@ -116,6 +138,8 @@ export const posts = new Hono()
       body.slug?.trim() ||
       (body.title?.trim() ? slugger.slug(body.title.trim()) : existing.slug);
     const tagIds = body.tags ? await upsertTags(body.tags) : undefined;
+    const { date: createdAt, error: createdAtError } = parseCreatedAt(body.createdAt);
+    if (createdAtError) return c.json({ error: createdAtError }, 400);
 
     try {
       const content = body.content ?? existing.content;
@@ -129,6 +153,7 @@ export const posts = new Hono()
           readingMinutes: calcReadingMinutes(content),
           coverImage: "coverImage" in body ? (body.coverImage?.trim() || null) : existing.coverImage,
           published: body.published ?? existing.published,
+          ...(createdAt ? { createdAt } : {}),
           tags: tagIds ? { set: [], connect: tagIds.map((tid) => ({ id: tid })) } : undefined,
         },
       });
